@@ -39,8 +39,7 @@ filetype plugin indent on
 set tabstop=4
 " when indenting with '>', use 4 spaces width
 set shiftwidth=4
-" On pressing tab, insert 4 spaces
-set expandtab
+
 
 nnoremap j gj
 nnoremap 0 g0
@@ -57,17 +56,34 @@ let NERDTreeMapActivateNode='l'
 
 set belloff=all " http://vim.wikia.com/wiki/Disable_beeping
 
-set backup " https://stackoverflow.com/questions/2197749/gvim-on-windows-way-to-disable-the-tmp-file-creationset dir=%TMP%
+set backup " https://stackoverflow.com/questions/2197749/gvim-on-windows-way-to-disable-the-tmp-file-creation
+set dir=%TMP%
 set backupdir=%TMP%
 set directory=%TMP%
 set noundofile
 
 :set number relativenumber "relative numbers
 
+"easier movement between windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+" alt+j/k
+nmap <M-j> mz:m+<cr>`z
+nmap <M-k> mz:m-2<cr>`z
+vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
+vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+
+" Pressing \ss will toggle and untoggle spell checking
+map <leader>ss :setlocal spell!<cr>
+
 call plug#begin()
 
 Plug 'scrooloose/nerdtree'
 Plug 'ctrlpvim/ctrlp'
 
+Plug 'xolox/vim-session'
 
 call plug#end()
