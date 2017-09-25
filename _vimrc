@@ -79,6 +79,8 @@ vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 " Pressing \ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
 
+:let g:session_autosave = 'no' " vim session warning
+
 call plug#begin()
 
 Plug 'scrooloose/nerdtree'
