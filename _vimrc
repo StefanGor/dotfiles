@@ -32,6 +32,10 @@ function MyDiff()
   endif
 endfunction
 
+set guifont=Hack:h10
+
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.meta,*.unity,*.controller,*.anim
+
 colorscheme desert
 
 filetype plugin indent on
@@ -87,8 +91,13 @@ if executable('ag')
 
   " ag is fast enough that CtrlP doesn't need to cache
   "let g:ctrlp_use_caching = 0
-  let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|*.meta'
+  
 endif
+
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll|meta|anim|unity|controller)$'
+  \ }
 
 call plug#begin()
 
@@ -98,6 +107,8 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
-Plugin 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline'
+
+Plug 'yegappan/mru'
 
 call plug#end()
