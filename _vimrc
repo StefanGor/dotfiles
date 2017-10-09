@@ -2,8 +2,11 @@ source $VIMRUNTIME/vimrc_example.vim
 source $VIMRUNTIME/mswin.vim
 behave mswin
 
+syntax on
+filetype plugin on
+
 set diffexpr=MyDiff()
-function MyDiff()
+function! MyDiff()
   let opt = '-a --binary '
   if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
   if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
@@ -63,7 +66,14 @@ set backupdir=%TMP%
 set directory=%TMP%
 set noundofile
 
-:set number relativenumber "relative numbers
+set number relativenumber "relative numbers
+set scrolloff=10
+
+" simplify common tab operations
+map <C-Up> :tabnew<CR>
+map <C-Down> :q<CR>
+map <C-Left> gT
+map <C-Right> gt
 
 "easier movement between windows
 map <C-j> <C-W>j
@@ -91,7 +101,7 @@ if executable('ag')
 
   " ag is fast enough that CtrlP doesn't need to cache
   "let g:ctrlp_use_caching = 0
-  
+
 endif
 
 let g:ctrlp_custom_ignore = {
@@ -99,16 +109,34 @@ let g:ctrlp_custom_ignore = {
   \ 'file': '\v\.(exe|so|dll|meta|anim|unity|controller)$'
   \ }
 
+noremap <Space> <nop>
+map <SPACE> <leader>
+
+nnoremap <leader><Space> :w<cr>
+"nnoremap <leader>ev :e $MYVIMRC<cr>
+noremap <leader>ev :execute 'e ' . resolve(expand($MYVIMRC))<CR>
+nnoremap <leader>so :w<cr> <bar> :so $MYVIMRC<cr>
+inoremap fd <Esc>
+
+let g:sneak#label = 1
+map <leader>f <Plug>Sneak_s
+map <leader>F <Plug>Sneak_S
 call plug#begin()
-
+"Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
 Plug 'ctrlpvim/ctrlp.vim'
-
+Plug 'justinmk/vim-sneak'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
 Plug 'vim-airline/vim-airline'
+Plug 'airblade/vim-gitgutter'
 
+"Plug 'easymotion/vim-easymotion'
 Plug 'yegappan/mru'
 
+Plug 'bronson/vim-trailing-whitespace'
+Plug 'sheerun/vim-polyglot'
+Plug 'jreybert/vimagit'
 call plug#end()
