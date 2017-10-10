@@ -32,7 +32,12 @@ if has("win32")
 		let &shellxquote=l:shxq_sav
 	  endif
 	endfunction
+set backup " https://stackoverflow.com/questions/2197749/gvim-on-windows-way-to-disable-the-tmp-file-creation
+set dir=%TMP%
+set backupdir=%TMP%
+set directory=%TMP%
 endif
+set noundofile
 
 syntax on
 filetype plugin indent on
@@ -60,12 +65,6 @@ map <C-n> :NERDTreeToggle<CR>
 let NERDTreeMapActivateNode='l'
 
 set belloff=all " http://vim.wikia.com/wiki/Disable_beeping
-
-set backup " https://stackoverflow.com/questions/2197749/gvim-on-windows-way-to-disable-the-tmp-file-creation
-set dir=%TMP%
-set backupdir=%TMP%
-set directory=%TMP%
-set noundofile
 
 set number relativenumber "relative numbers
 set scrolloff=10
