@@ -45,6 +45,9 @@ set foldmethod=marker
 set foldmarker=BFOLD,EFOLD
 set guifont=Hack:h10
 
+set clipboard=unnamedplus
+set mouse=a
+
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.meta,*.unity,*.controller,*.anim
 
 colorscheme desert
