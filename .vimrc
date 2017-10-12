@@ -36,7 +36,8 @@ endif
 
 syntax on
 filetype plugin indent on
-
+set foldmethod=marker
+set foldmarker=BFOLD,EFOLD
 set guifont=Hack:h10
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.meta,*.unity,*.controller,*.anim
@@ -118,10 +119,28 @@ noremap <leader>ev :execute 'e ' . resolve(expand($MYVIMRC))<CR>
 nnoremap <leader>so :w<cr> <bar> :so $MYVIMRC<cr>
 inoremap fd <Esc>
 
+"autocmd BufWinLeave *.* mkview
+"autocmd BufWinEnter *.* silent loadview
+
 let g:sneak#label = 1
 map <leader>f <Plug>Sneak_s
 map <leader>F <Plug>Sneak_S
-
+nnoremap <silent> <Esc><Esc> <Esc>:nohlsearch<CR><Esc>
+:nnoremap <F5> :buffers<CR>:buffer<Space>
+set rtp+=C:/Program\ Files/SumatraPDF
+let g:vimtex_view_general_viewer = 'SumatraPDF'
+let g:vimtex_view_general_options
+	\ = '-reuse-instance -forward-search @tex @line @pdf'
+	\ . ' -inverse-search "gvim --servername ' . v:servername
+	\ . ' --remote-send \"^<C-\^>^<C-n^>'
+	\ . ':drop \%f^<CR^>:\%l^<CR^>:normal\! zzzv^<CR^>'
+	\ . ':execute ''drop '' . fnameescape(''\%f'')^<CR^>'
+	\ . ':\%l^<CR^>:normal\! zzzv^<CR^>'
+	\ . ':call remote_foreground('''.v:servername.''')^<CR^>^<CR^>\""'
+let g:vimtex_quickfix_latexlog = {'default' : 0}
+"let g:vimtex_view_general_viewer = 'SumatraPDF' 
+"let g:vimtex_view_general_options='-reuse-instance -forward-search @tex @line @pdf'
+"let g:vimtex_view_general_options_latexmk='-reuse-instance'
 call plug#begin()
 "Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/nerdtree'
@@ -130,7 +149,7 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'justinmk/vim-sneak'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
-
+Plug 'lervag/vimtex'
 Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
 
