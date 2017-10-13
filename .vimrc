@@ -1,3 +1,4 @@
+"BFOLD
 if has("win32")
 	source $VIMRUNTIME/vimrc_example.vim
 	source $VIMRUNTIME/mswin.vim
@@ -36,18 +37,35 @@ set backup " https://stackoverflow.com/questions/2197749/gvim-on-windows-way-to-
 set dir=%TMP%
 set backupdir=%TMP%
 set directory=%TMP%
-endif
-set noundofile
 
+" Start on right half of first monitor
+set lines=70 columns=120
+winpos 960 10
+
+set rtp+=C:/Program\ Files/SumatraPDF
+let g:vimtex_view_general_viewer = 'SumatraPDF'
+let g:vimtex_view_general_options
+	\ = '-reuse-instance -forward-search @tex @line @pdf'
+	\ . ' -inverse-search "gvim --servername ' . v:servername
+	\ . ' --remote-send \"^<C-\^>^<C-n^>'
+	\ . ':drop \%f^<CR^>:\%l^<CR^>:normal\! zzzv^<CR^>'
+	\ . ':execute ''drop '' . fnameescape(''\%f'')^<CR^>'
+	\ . ':\%l^<CR^>:normal\! zzzv^<CR^>'
+	\ . ':call remote_foreground('''.v:servername.''')^<CR^>^<CR^>\""'
+
+endif
+"EFOLD
+
+set noundofile
 syntax on
 filetype plugin indent on
 set foldmethod=marker
 set foldmarker=BFOLD,EFOLD
 set guifont=Hack:h10
-
+set encoding=utf-8
 set clipboard=unnamedplus
 set mouse=a
-
+au BufRead,BufNewFile *.txt,*.tex set wrap linebreak nolist textwidth=0 wrapmargin=0
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.meta,*.unity,*.controller,*.anim
 
 colorscheme desert
@@ -69,7 +87,6 @@ map <C-n> :NERDTreeToggle<CR>
 let NERDTreeMapActivateNode='l'
 
 set belloff=all " http://vim.wikia.com/wiki/Disable_beeping
-
 set number relativenumber "relative numbers
 set scrolloff=10
 
@@ -128,23 +145,13 @@ let g:sneak#label = 1
 map <leader>f <Plug>Sneak_s
 map <leader>F <Plug>Sneak_S
 nnoremap <silent> <Esc><Esc> <Esc>:nohlsearch<CR><Esc>
-:nnoremap <F5> :buffers<CR>:buffer<Space>
-set rtp+=C:/Program\ Files/SumatraPDF
-let g:vimtex_view_general_viewer = 'SumatraPDF'
-let g:vimtex_view_general_options
-	\ = '-reuse-instance -forward-search @tex @line @pdf'
-	\ . ' -inverse-search "gvim --servername ' . v:servername
-	\ . ' --remote-send \"^<C-\^>^<C-n^>'
-	\ . ':drop \%f^<CR^>:\%l^<CR^>:normal\! zzzv^<CR^>'
-	\ . ':execute ''drop '' . fnameescape(''\%f'')^<CR^>'
-	\ . ':\%l^<CR^>:normal\! zzzv^<CR^>'
-	\ . ':call remote_foreground('''.v:servername.''')^<CR^>^<CR^>\""'
+nnoremap <F5> :buffers<CR>:buffer<Space>
+
 let g:vimtex_quickfix_latexlog = {'default' : 0}
-"let g:vimtex_view_general_viewer = 'SumatraPDF' 
-"let g:vimtex_view_general_options='-reuse-instance -forward-search @tex @line @pdf'
-"let g:vimtex_view_general_options_latexmk='-reuse-instance'
+nnoremap <F6> :VimtexTocToggle<CR>
+
 call plug#begin()
-"Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
 Plug 'ctrlpvim/ctrlp.vim'
@@ -154,11 +161,6 @@ Plug 'xolox/vim-session'
 Plug 'lervag/vimtex'
 Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
-
-"Plug 'easymotion/vim-easymotion'
 Plug 'yegappan/mru'
-
 Plug 'bronson/vim-trailing-whitespace'
-Plug 'sheerun/vim-polyglot'
-Plug 'jreybert/vimagit'
 call plug#end()
