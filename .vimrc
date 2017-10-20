@@ -4,7 +4,7 @@ if has("win32")
 	set dir=%TMP%
 	set backupdir=%TMP%
 	set directory=%TMP%
-
+	"set clipboard=unnamed
 	" Start on right half of first monitor
 	set lines=70 columns=120
 	winpos 960 10
@@ -20,10 +20,10 @@ if has("win32")
 		\ . ':\%l^<CR^>:normal\! zzzv^<CR^>'
 		\ . ':call remote_foreground('''.v:servername.''')^<CR^>^<CR^>\""'
 else
-	set clipboard=unnamedplus
+	"set clipboard=unnamedplus
 endif
 "EFOLD
-
+set clipboard^=unnamed,unnamedplus
 set noundofile
 syntax on
 filetype plugin indent on
@@ -36,6 +36,7 @@ au BufRead,BufNewFile *.txt,*.tex set wrap linebreak nolist textwidth=0 wrapmarg
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.meta,*.unity,*.controller,*.anim
 set breakindent
 set autoindent
+set backspace=indent,eol,start
 
 colorscheme monokai
 
@@ -49,9 +50,11 @@ nnoremap 0 g0
 nnoremap k gk
 nnoremap $ g$
 
-" Nerdtree
+" Nerdtree/MRU
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" Open MRU by default if a file is not being opened
+"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | MRU | endif
+autocmd VimEnter * MRU
 map <C-n> :NERDTreeToggle<CR>
 let NERDTreeMapActivateNode='l'
 
@@ -65,7 +68,7 @@ map <C-Down> :q<CR>
 map <C-Left> gT
 map <C-Right> gt
 
-"buffer navigation
+"buffer navigation/airline customisation
 noremap <C-Tab> :bn<CR>
 noremap <C-S-Tab> :bp<CR>
 let g:airline#extensions#tabline#enabled = 1
@@ -86,7 +89,13 @@ vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 " Pressing \ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
 
-:let g:session_autosave = 'no' " vim session warning
+" Use CTRL-S for saving, also in Insert mode
+noremap <C-S> :update<CR>
+vnoremap <C-S> <C-C>:update<CR>
+inoremap <C-S> <C-O>:update<CR>
+
+let g:session_autosave = 'no' " vim session warning
+let g:session_autoload = 'no'
 
 if executable('ag')
   " Use ag over grep
