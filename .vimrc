@@ -150,12 +150,21 @@ nnoremap <F5> :buffers<CR>:buffer<Space>
 let g:vimtex_quickfix_latexlog = {'default' : 0}
 nnoremap <F6> :VimtexTocToggle<CR>
 
+nnoremap <leader>t :FZF<CR>
+
+autocmd FileType java setlocal omnifunc=javacomplete#Complete
+
+let g:airline#extensions#tabline#enabled = 1
+let g:deoplete#enable_at_startup = 1
+
 call plug#begin()
 Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
-Plug 'ctrlpvim/ctrlp.vim'
+"Plug 'ctrlpvim/ctrlp.vim'
 Plug 'justinmk/vim-sneak'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 Plug 'lervag/vimtex'
@@ -163,4 +172,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
 Plug 'yegappan/mru'
 Plug 'bronson/vim-trailing-whitespace'
+Plug 'artur-shaik/vim-javacomplete2'
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 call plug#end()
