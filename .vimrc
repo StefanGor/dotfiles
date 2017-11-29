@@ -4,10 +4,10 @@ if has("win32")
 	set dir=%TMP%
 	set backupdir=%TMP%
 	set directory=%TMP%
-	"set clipboard=unnamed
+
 	" Start on right half of first monitor
 	set lines=70 columns=120
-	winpos 960 10
+	winpos 1000 0
 
 	set rtp+=C:/Program\ Files/SumatraPDF
 	let g:vimtex_view_general_viewer = 'SumatraPDF'
@@ -20,74 +20,92 @@ if has("win32")
 		\ . ':\%l^<CR^>:normal\! zzzv^<CR^>'
 		\ . ':call remote_foreground('''.v:servername.''')^<CR^>^<CR^>\""'
 else
-	"set clipboard=unnamedplus
+	" linux-specific stuff
 endif
 "EFOLD
+
+" allow pasting on both windows and linux
 set clipboard^=unnamed,unnamedplus
+set mouse=a
 set noundofile
 syntax on
 filetype plugin indent on
+
 set foldmethod=marker
 set foldmarker=BFOLD,EFOLD
+
 set guifont=Hack:h10
 set encoding=utf-8
-set mouse=a
 au BufRead,BufNewFile *.txt,*.tex set wrap linebreak nolist textwidth=0 wrapmargin=0
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.meta,*.unity,*.controller,*.anim
 set breakindent
 set autoindent
 set backspace=indent,eol,start
-
+set guioptions=
+set lazyredraw
 colorscheme monokai
+"colorscheme desert
+set nrformats-=octal
+
+set incsearch
+set hlsearch
+nnoremap <silent> <Esc><Esc> <Esc>:nohlsearch<CR><Esc>
 
 " show existing tab with 4 spaces width
 set tabstop=4
 " when indenting with '>', use 4 spaces width
 set shiftwidth=4
 
+set laststatus=2
+set showtabline=1
+
+" make Vim add new vertical splits to the right and new horizontal splits below
+set splitright
+set splitbelow
+
+" Make movement work on wrapped lines
 nnoremap j gj
 nnoremap 0 g0
 nnoremap k gk
 nnoremap $ g$
+
+inoremap <C-BS> <C-W>
 
 " Nerdtree/MRU
 autocmd StdinReadPre * let s:std_in=1
 " Open MRU by default if a file is not being opened
 "autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | MRU | endif
 autocmd VimEnter * MRU
-map <C-n> :NERDTreeToggle<CR>
+"map <C-n> :NERDTreeToggle<CR>
 let NERDTreeMapActivateNode='l'
 
 set belloff=all " http://vim.wikia.com/wiki/Disable_beeping
 set number relativenumber "relative numbers
 set scrolloff=10
 
- "simplify common tab operations
-map <C-Up> :tabnew<CR>
-map <C-Down> :q<CR>
-map <C-Left> gT
-map <C-Right> gt
+" Add some tab creation shortcuts
+noremap <C-Up> :tabnew<CR>
+noremap <C-Down> :q<CR>
+noremap <C-Left> gT
+noremap <C-Right> gt
 
-"buffer navigation/airline customisation
 noremap <C-Tab> :bn<CR>
 noremap <C-S-Tab> :bp<CR>
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#fnamemod = ':t'
 
-"easier movement between windows
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+" Easier movement between windows
+noremap <C-j> <C-W>j
+noremap <C-k> <C-W>k
+noremap <C-h> <C-W>h
+noremap <C-l> <C-W>l
 
-" alt+j/k
-nmap <M-j> mz:m+<cr>`z
-nmap <M-k> mz:m-2<cr>`z
-vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+" alt+j/k to swap lines up/down
+nnoremap <M-j> mz:m+<cr>`z
+nnoremap <M-k> mz:m-2<cr>`z
+vnoremap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
+vnoremap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
-" Pressing \ss will toggle and untoggle spell checking
-map <leader>ss :setlocal spell!<cr>
+" Toggle spellchecking
+noremap <leader>ss :setlocal spell!<cr>
 
 " Use CTRL-S for saving, also in Insert mode
 noremap <C-S> :update<CR>
@@ -106,10 +124,10 @@ if executable('ag')
   "let g:ctrlp_use_caching = 0
 endif
 
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-  \ 'file': '\v\.(exe|so|dll|meta|anim|unity|controller)$'
-  \ }
+"let g:ctrlp_custom_ignore = {
+  "\ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  "\ 'file': '\v\.(exe|so|dll|meta|anim|unity|controller)$'
+  "\ }
 
 noremap <Space> <nop>
 map <SPACE> <leader>
@@ -123,44 +141,38 @@ let g:sneak#label = 1
 map <leader>f <Plug>Sneak_s
 map <leader>F <Plug>Sneak_S
 
-nnoremap <silent> <Esc><Esc> <Esc>:nohlsearch<CR><Esc>
 nnoremap <F5> :buffers<CR>:buffer<Space>
 
- "can type ':e %%\' to get the current file's path
+" Can type ':e %%\' to get the current file's path
 cabbr <expr> %% expand('%:p:h')
 
-nnoremap <F6> :VimtexTocToggle<CR>
+"nnoremap <F6> :VimtexTocToggle<CR>
 
-nnoremap <leader>t :FZF<CR>
-
-autocmd FileType java setlocal omnifunc=javacomplete#Complete
-
-let g:deoplete#enable_at_startup = 1
+"nnoremap <leader>t :FZF<CR>
 
 nmap <C-m> <leader>c<Space>
 vmap <C-m> <leader>c<Space>
 
+let g:vimtex_quickfix_open_on_warning = 0
 call plug#begin()
-"Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
-"Plug 'ctrlpvim/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'justinmk/vim-sneak'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+"Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+"Plug 'junegunn/fzf.vim'
+"Plug 'jremmen/vim-ripgrep'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
-Plug 'lervag/vimtex'
-Plug 'vim-airline/vim-airline'
+"Plug 'lervag/vimtex'
+Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'yegappan/mru'
 Plug 'bronson/vim-trailing-whitespace'
-Plug 'artur-shaik/vim-javacomplete2'
-"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'sirver/UltiSnips'
-Plug 'honza/vim-snippets'
+"Plug 'sirver/UltiSnips'
+"Plug 'honza/vim-snippets'
 Plug 'nathanaelkane/vim-indent-guides'
-Plug 'Raimondi/delimitMate'
+"Plug 'Raimondi/delimitMate'
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'ervandew/supertab'
+"Plug 'ervandew/supertab'
 call plug#end()
