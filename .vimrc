@@ -7,7 +7,7 @@ if has("win32")
 
 	" Start on right half of first monitor
 	set lines=70 columns=120
-	winpos 1000 0
+	"winpos 1000 0
 
 	set rtp+=C:/Program\ Files/SumatraPDF
 	let g:vimtex_view_general_viewer = 'SumatraPDF'
@@ -24,6 +24,7 @@ else
 endif
 "EFOLD
 
+" check :h vim_diff.txt
 " allow pasting on both windows and linux
 set clipboard^=unnamed,unnamedplus
 set mouse=a
@@ -43,8 +44,8 @@ set autoindent
 set backspace=indent,eol,start
 set guioptions=
 set lazyredraw
-colorscheme monokai
-"colorscheme desert
+"colorscheme monokai
+colorscheme desert
 set nrformats-=octal
 
 set incsearch
@@ -75,7 +76,7 @@ inoremap <C-BS> <C-W>
 autocmd StdinReadPre * let s:std_in=1
 " Open MRU by default if a file is not being opened
 "autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | MRU | endif
-autocmd VimEnter * MRU
+"autocmd VimEnter * MRU
 "map <C-n> :NERDTreeToggle<CR>
 let NERDTreeMapActivateNode='l'
 
@@ -128,7 +129,7 @@ endif
   "\ 'dir':  '\v[\/]\.(git|hg|svn)$',
   "\ 'file': '\v\.(exe|so|dll|meta|anim|unity|controller)$'
   "\ }
-
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 noremap <Space> <nop>
 map <SPACE> <leader>
 
@@ -154,7 +155,7 @@ nmap <C-m> <leader>c<Space>
 vmap <C-m> <leader>c<Space>
 
 let g:vimtex_quickfix_open_on_warning = 0
-call plug#begin()
+call plug#begin('~/.vim/plugged') " :echo expand('~')
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
 Plug 'ctrlpvim/ctrlp.vim'
@@ -175,4 +176,17 @@ Plug 'nathanaelkane/vim-indent-guides'
 "Plug 'Raimondi/delimitMate'
 Plug 'ntpeters/vim-better-whitespace'
 "Plug 'ervandew/supertab'
+"Plug 'OmniSharp/omnisharp-vim'
+Plug 'tpope/vim-dispatch' "dont need to run :OmnisharpStartServer with this
+Plug 'Shougo/denite.nvim'
+Plug 'vim-syntastic/syntastic'
+"if has('nvim')
+  "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"else
+  "Plug 'Shougo/deoplete.nvim'
+  "Plug 'roxma/nvim-yarp'
+  "Plug 'roxma/vim-hug-neovim-rpc'
+"endif
+"Plug 'Valloric/YouCompleteMe'
 call plug#end()
+
