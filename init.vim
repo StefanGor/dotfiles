@@ -1,6 +1,8 @@
 set rtp+=~/.vim
 
 " temp/test section
+"let g:loaded_youcompleteme = 1 "disables YCM
+"let g:ycm_always_populate_location_list = 1
 
 " Editor Settings
 colorscheme onedark
@@ -8,10 +10,10 @@ set clipboard^=unnamed,unnamedplus
 set mouse=a
 set guifont=Hack:h10
 set lazyredraw
+
 " tabs 4 spaces width and indent by 4 spaces with <
 set tabstop=4
 set shiftwidth=4
-
 set showtabline=1
 set number relativenumber "relative numbers
 
@@ -30,11 +32,12 @@ nnoremap 0 g0
 nnoremap k gk
 nnoremap $ g$
 
+" Buffers
 nnoremap <F5> :buffers<CR>:buffer<Space>
 noremap <C-Tab> :bn<CR>
 noremap <C-S-Tab> :bp<CR>
 
-" Add some tab creation shortcuts
+" Tabs
 noremap <C-Up> :tabnew<CR>
 noremap <C-Down> :q<CR>
 noremap <C-Left> gT
@@ -69,35 +72,35 @@ nnoremap <silent> <Esc><Esc> <Esc>:nohlsearch<CR><Esc>
 " Can type ':e %%\' to get the current file's path
 cabbr <expr> %% expand('%:p:h')
 
-" Plugin Key Bindings
-
-" commenting - nerdcommenter
-nmap <C-m> <leader>c<Space>
-vmap <C-m> <leader>c<Space>
-
-let g:sneak#label = 1
-map <leader>f <Plug>Sneak_s
-map <leader>F <Plug>Sneak_S
-
 " Plugin variables
-
-let g:indent_guides_enable_on_vim_startup = 1
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
   let g:ctrlp_user_command = 'ag -l --nocolor -g "" %s'
 endif
 
+" Plugins
 call plug#begin('~/.vim/plugged') " :echo expand('~')
 Plug 'scrooloose/nerdtree'
+
 Plug 'scrooloose/nerdcommenter'
+" commenting - nerdcommenter
+nmap <C-c> <leader>c<Space>
+vmap <C-c> <leader>c<Space>
+
 Plug 'justinmk/vim-sneak'
+let g:sneak#label = 1
+map <leader>f <Plug>Sneak_s
+map <leader>F <Plug>Sneak_S
+
 Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'yegappan/mru'
 Plug 'bronson/vim-trailing-whitespace'
-Plug 'nathanaelkane/vim-indent-guides'
-"Plug 'OmniSharp/omnisharp-vim'
-"Plug 'Valloric/YouCompleteMe'
+"Plug 'OmniSharp/omnisharp-vim' " need python 2.7
+Plug 'Valloric/YouCompleteMe'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'udalov/kotlin-vim'
+Plug 'jiangmiao/auto-pairs'
+"Plug 'w0rp/ale'
 call plug#end()
