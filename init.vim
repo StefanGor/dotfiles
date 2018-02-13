@@ -1,6 +1,8 @@
 set rtp+=~/.vim
 
 " temp/test section
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * MRU
 "let g:loaded_youcompleteme = 1 "disables YCM
 "let g:ycm_always_populate_location_list = 1
 
@@ -81,10 +83,10 @@ endif
 
 " Plugins
 call plug#begin('~/.vim/plugged') " :echo expand('~')
+
 Plug 'scrooloose/nerdtree'
 
 Plug 'scrooloose/nerdcommenter'
-" commenting - nerdcommenter
 nmap <C-c> <leader>c<Space>
 vmap <C-c> <leader>c<Space>
 
@@ -97,10 +99,28 @@ Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'yegappan/mru'
 Plug 'bronson/vim-trailing-whitespace'
-"Plug 'OmniSharp/omnisharp-vim' " need python 2.7
+
 Plug 'Valloric/YouCompleteMe'
-Plug 'ctrlpvim/ctrlp.vim'
+let g:ycm_autoclose_preview_window_after_completion=1
+
+"Plug 'OmniSharp/omnisharp-vim'
+"let g:OmniSharp_server_type = 'v1'
+"let g:OmniSharp_server_type = 'roslyn'
+
+"Plug 'aignas/omnisharp-vim'
+
 Plug 'udalov/kotlin-vim'
 Plug 'jiangmiao/auto-pairs'
-"Plug 'w0rp/ale'
+
+Plug 'Shougo/denite.nvim'
+nnoremap <C-p> :Denite file_rec<CR>
+
+Plug 'airblade/vim-rooter'
+
+Plug 'majutsushi/tagbar'
+nmap <F8> :TagbarToggle<CR>
+
+Plug 'ludovicchabant/vim-gutentags'
+let g:gutentags_cache_dir = expand('$HOME/Documents/Tags')
+
 call plug#end()
