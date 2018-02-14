@@ -1,5 +1,6 @@
 set rtp+=~/.vim
 
+set path+="C:/sandbox/Woolworths.OnlineShopping"
 " temp/test section
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * MRU
@@ -12,6 +13,10 @@ set clipboard^=unnamed,unnamedplus
 set mouse=a
 set guifont=Hack:h10
 set lazyredraw
+
+command! Fs :GuiFont! Hack:h10
+command! Fl :GuiFont! Hack:h12
+command! -nargs=1 Font :GuiFont! Hack:h<args>
 
 " tabs 4 spaces width and indent by 4 spaces with <
 set tabstop=4
@@ -27,6 +32,7 @@ au BufRead,BufNewFile *.txt,*.tex set wrap linebreak nolist textwidth=0 wrapmarg
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.meta,*.unity,*.controller,*.anim
 
 " Normal Key Bindings/Mappings
+inoremap <C-BS> <C-W>
 
 " Make movement work on wrapped lines
 nnoremap j gj
@@ -109,13 +115,15 @@ let g:ycm_autoclose_preview_window_after_completion=1
 
 "Plug 'aignas/omnisharp-vim'
 
-Plug 'udalov/kotlin-vim'
+"Plug 'udalov/kotlin-vim'
 Plug 'jiangmiao/auto-pairs'
 
 Plug 'Shougo/denite.nvim'
 nnoremap <C-p> :Denite file_rec<CR>
 
-Plug 'airblade/vim-rooter'
+"call denite#custom#var('file_rec', 'command', ['ag', '--follow', '--nocolor', '--nogroup', '--ignore', '*.dll', '-g', ''])
+
+"Plug 'airblade/vim-rooter'
 
 Plug 'majutsushi/tagbar'
 nmap <F8> :TagbarToggle<CR>
