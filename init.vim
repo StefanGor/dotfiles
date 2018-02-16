@@ -21,6 +21,8 @@ command! -nargs=1 Font :GuiFont! Hack:h<args>
 " tabs 4 spaces width and indent by 4 spaces with <
 set tabstop=4
 set shiftwidth=4
+set smartindent
+set expandtab
 set showtabline=1
 set number relativenumber "relative numbers
 
@@ -119,7 +121,7 @@ let g:ycm_autoclose_preview_window_after_completion=1
 Plug 'jiangmiao/auto-pairs'
 
 Plug 'Shougo/denite.nvim'
-nnoremap <C-p> :Denite file_rec<CR>
+"nnoremap <C-p> :Denite file_rec<CR>
 
 "call denite#custom#var('file_rec', 'command', ['ag', '--follow', '--nocolor', '--nogroup', '--ignore', '*.dll', '-g', ''])
 
@@ -132,3 +134,6 @@ Plug 'ludovicchabant/vim-gutentags'
 let g:gutentags_cache_dir = expand('$HOME/Documents/Tags')
 
 call plug#end()
+
+call denite#custom#var('file_rec', 'command',['pt', '--follow', '--nocolor', '--nogroup', '-g:', ''])
+map <C-P> :DeniteProjectDir -buffer-name=git  file_rec<CR>
