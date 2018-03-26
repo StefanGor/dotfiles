@@ -4,7 +4,7 @@
 	ci = commit
 	st = status
 	publish = "!git branch-name push -u origin $(git branch-name)"
-	update = "!git checkout master && git pull && git checkout -"
+	update = "!git pull origin master"
 	last = log -1 HEAD
 	unstage = reset HEAD --
 	ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate

@@ -1,6 +1,11 @@
 set rtp+=~/.vim
 
+set path+="C:/sandbox/Woolworths.OnlineShopping"
 " temp/test section
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * MRU
+"let g:loaded_youcompleteme = 1 "disables YCM
+"let g:ycm_always_populate_location_list = 1
 
 " Editor Settings
 colorscheme onedark
@@ -8,10 +13,14 @@ set clipboard^=unnamed,unnamedplus
 set mouse=a
 set guifont=Hack:h10
 set lazyredraw
+
+command! Fs :GuiFont! Hack:h10
+command! Fl :GuiFont! Hack:h12
+command! -nargs=1 Font :GuiFont! Hack:h<args>
+
 " tabs 4 spaces width and indent by 4 spaces with <
 set tabstop=4
 set shiftwidth=4
-
 set showtabline=1
 set number relativenumber "relative numbers
 
@@ -23,6 +32,7 @@ au BufRead,BufNewFile *.txt,*.tex set wrap linebreak nolist textwidth=0 wrapmarg
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.meta,*.unity,*.controller,*.anim
 
 " Normal Key Bindings/Mappings
+inoremap <C-BS> <C-W>
 
 " Make movement work on wrapped lines
 nnoremap j gj
@@ -30,11 +40,12 @@ nnoremap 0 g0
 nnoremap k gk
 nnoremap $ g$
 
+" Buffers
 nnoremap <F5> :buffers<CR>:buffer<Space>
 noremap <C-Tab> :bn<CR>
 noremap <C-S-Tab> :bp<CR>
 
-" Add some tab creation shortcuts
+" Tabs
 noremap <C-Up> :tabnew<CR>
 noremap <C-Down> :q<CR>
 noremap <C-Left> gT
@@ -69,35 +80,55 @@ nnoremap <silent> <Esc><Esc> <Esc>:nohlsearch<CR><Esc>
 " Can type ':e %%\' to get the current file's path
 cabbr <expr> %% expand('%:p:h')
 
-" Plugin Key Bindings
-
-" commenting - nerdcommenter
-nmap <C-m> <leader>c<Space>
-vmap <C-m> <leader>c<Space>
-
-let g:sneak#label = 1
-map <leader>f <Plug>Sneak_s
-map <leader>F <Plug>Sneak_S
-
 " Plugin variables
-
-let g:indent_guides_enable_on_vim_startup = 1
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
   let g:ctrlp_user_command = 'ag -l --nocolor -g "" %s'
 endif
 
+" Plugins
 call plug#begin('~/.vim/plugged') " :echo expand('~')
+
 Plug 'scrooloose/nerdtree'
+
 Plug 'scrooloose/nerdcommenter'
+nmap <C-c> <leader>c<Space>
+vmap <C-c> <leader>c<Space>
+
 Plug 'justinmk/vim-sneak'
+let g:sneak#label = 1
+map <leader>f <Plug>Sneak_s
+map <leader>F <Plug>Sneak_S
+
 Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'yegappan/mru'
 Plug 'bronson/vim-trailing-whitespace'
-Plug 'nathanaelkane/vim-indent-guides'
+
+Plug 'Valloric/YouCompleteMe'
+let g:ycm_autoclose_preview_window_after_completion=1
+
 "Plug 'OmniSharp/omnisharp-vim'
-"Plug 'Valloric/YouCompleteMe'
-Plug 'ctrlpvim/ctrlp.vim'
+"let g:OmniSharp_server_type = 'v1'
+"let g:OmniSharp_server_type = 'roslyn'
+
+"Plug 'aignas/omnisharp-vim'
+
+"Plug 'udalov/kotlin-vim'
+Plug 'jiangmiao/auto-pairs'
+
+Plug 'Shougo/denite.nvim'
+nnoremap <C-p> :Denite file_rec<CR>
+
+"call denite#custom#var('file_rec', 'command', ['ag', '--follow', '--nocolor', '--nogroup', '--ignore', '*.dll', '-g', ''])
+
+"Plug 'airblade/vim-rooter'
+
+Plug 'majutsushi/tagbar'
+nmap <F8> :TagbarToggle<CR>
+
+Plug 'ludovicchabant/vim-gutentags'
+let g:gutentags_cache_dir = expand('$HOME/Documents/Tags')
+
 call plug#end()
