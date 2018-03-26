@@ -1,6 +1,5 @@
 set rtp+=~/.vim
 
-set path+="C:/sandbox/Woolworths.OnlineShopping"
 " temp/test section
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * MRU
@@ -13,6 +12,7 @@ set clipboard^=unnamed,unnamedplus
 set mouse=a
 set guifont=Hack:h10
 set lazyredraw
+set undofile
 
 command! Fs :GuiFont! Hack:h10
 command! Fl :GuiFont! Hack:h12
@@ -21,6 +21,8 @@ command! -nargs=1 Font :GuiFont! Hack:h<args>
 " tabs 4 spaces width and indent by 4 spaces with <
 set tabstop=4
 set shiftwidth=4
+set smartindent
+set expandtab
 set showtabline=1
 set number relativenumber "relative numbers
 
@@ -112,16 +114,11 @@ let g:ycm_autoclose_preview_window_after_completion=1
 "Plug 'OmniSharp/omnisharp-vim'
 "let g:OmniSharp_server_type = 'v1'
 "let g:OmniSharp_server_type = 'roslyn'
+"let g:OmniSharp_server_path = expand('$HOME/Documents/GitHub/roslyn/omnisharp.exe')
 
-"Plug 'aignas/omnisharp-vim'
-
-"Plug 'udalov/kotlin-vim'
 Plug 'jiangmiao/auto-pairs'
 
 Plug 'Shougo/denite.nvim'
-nnoremap <C-p> :Denite file_rec<CR>
-
-"call denite#custom#var('file_rec', 'command', ['ag', '--follow', '--nocolor', '--nogroup', '--ignore', '*.dll', '-g', ''])
 
 "Plug 'airblade/vim-rooter'
 
@@ -131,4 +128,18 @@ nmap <F8> :TagbarToggle<CR>
 Plug 'ludovicchabant/vim-gutentags'
 let g:gutentags_cache_dir = expand('$HOME/Documents/Tags')
 
+Plug 'junegunn/vim-peekaboo'
+"Plug 'demelev/TagHighlight'
+
+"Plug 'tpope/vim-dispatch'
+
+Plug 'kshenoy/vim-signature'
+"Plug 'mhinz/vim-signify' " like gitgutter but does other VCS
+
+Plug 'Yggdroot/LeaderF'
+let g:Lf_ShortcutF = '<C-P>'
+
 call plug#end()
+
+"call denite#custom#var('file_rec', 'command',['pt', '--follow', '--nocolor', '--nogroup', '-g:', ''])
+"map <C-P> :DeniteProjectDir -buffer-name=git  file_rec<CR>
