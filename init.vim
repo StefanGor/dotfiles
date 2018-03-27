@@ -136,7 +136,10 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'kshenoy/vim-signature'
 "Plug 'mhinz/vim-signify' " like gitgutter but does other VCS
 
+Plug 'Yggdroot/LeaderF'
+let g:Lf_ShortcutF = '<C-P>'
+
 call plug#end()
 
-call denite#custom#var('file_rec', 'command',['pt', '--follow', '--nocolor', '--nogroup', '-g:', ''])
-map <C-P> :DeniteProjectDir -buffer-name=git  file_rec<CR>
+"call denite#custom#var('file_rec', 'command',['pt', '--follow', '--nocolor', '--nogroup', '-g:', ''])
+"map <C-P> :DeniteProjectDir -buffer-name=git  file_rec<CR>
