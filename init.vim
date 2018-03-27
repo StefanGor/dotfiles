@@ -121,6 +121,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'Shougo/denite.nvim'
 
 "Plug 'airblade/vim-rooter'
+"let g:rooter_manual_only = 1
 
 Plug 'majutsushi/tagbar'
 nmap <F8> :TagbarToggle<CR>
@@ -138,6 +139,7 @@ Plug 'kshenoy/vim-signature'
 
 Plug 'Yggdroot/LeaderF'
 let g:Lf_ShortcutF = '<C-P>'
+let g:Lf_WorkingDirectoryMode = 'A'
 
 call plug#end()
 
