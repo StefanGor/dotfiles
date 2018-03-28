@@ -120,7 +120,7 @@ Plug 'jiangmiao/auto-pairs'
 
 Plug 'Shougo/denite.nvim'
 
-"Plug 'airblade/vim-rooter'
+Plug 'airblade/vim-rooter'
 "let g:rooter_manual_only = 1
 
 Plug 'majutsushi/tagbar'
