@@ -84,7 +84,8 @@ cabbr <expr> %% expand('%:p:h')
 
 " CUSTOM COMMANDS {{{
 
-command! Fs :GuiFont! Hack:h10
+command! Fs :GuiFont! Hack:h8
+command! Fm :GuiFont! Hack:h10
 command! Fl :GuiFont! Hack:h12
 command! -nargs=1 Font :GuiFont! Hack:h<args>
 
