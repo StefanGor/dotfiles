@@ -154,6 +154,12 @@ let g:Lf_ShortcutF = '<C-P>'
 let g:Lf_WorkingDirectoryMode = 'A'
 
 Plug 'google/vim-searchindex'
+
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-session'
+
+Plug 'mattn/emmet-vim'
+
 call plug#end()
 
 " }}}
