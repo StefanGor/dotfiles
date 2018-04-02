@@ -1,22 +1,17 @@
-set rtp+=~/.vim
-
-" temp/test section
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * MRU
+" TEMP/TEST SECTION
 "let g:loaded_youcompleteme = 1 "disables YCM
 "let g:ycm_always_populate_location_list = 1
 
-" Editor Settings
+" EDITOR SETTINGS {{{
+set rtp+=~/.vim
+
 colorscheme onedark
 set clipboard^=unnamed,unnamedplus
 set mouse=a
 set guifont=Hack:h10
 set lazyredraw
 set undofile
-
-command! Fs :GuiFont! Hack:h10
-command! Fl :GuiFont! Hack:h12
-command! -nargs=1 Font :GuiFont! Hack:h<args>
+set shortmess=aAIsT
 
 " tabs 4 spaces width and indent by 4 spaces with <
 set tabstop=4
@@ -33,8 +28,11 @@ set splitbelow
 au BufRead,BufNewFile *.txt,*.tex set wrap linebreak nolist textwidth=0 wrapmargin=0
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.meta,*.unity,*.controller,*.anim
 
-" Normal Key Bindings/Mappings
+" }}}
+
+" NORMAL KEY BINDINGS/MAPPINGS {{{
 inoremap <C-BS> <C-W>
+nmap S :%s//g<LEFT><LEFT>
 
 " Make movement work on wrapped lines
 nnoremap j gj
@@ -82,14 +80,27 @@ nnoremap <silent> <Esc><Esc> <Esc>:nohlsearch<CR><Esc>
 " Can type ':e %%\' to get the current file's path
 cabbr <expr> %% expand('%:p:h')
 
-" Plugin variables
+" }}}
 
-" Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
-if executable('ag')
-  let g:ctrlp_user_command = 'ag -l --nocolor -g "" %s'
-endif
+" CUSTOM COMMANDS {{{
 
-" Plugins
+command! Fs :GuiFont! Hack:h10
+command! Fl :GuiFont! Hack:h12
+command! -nargs=1 Font :GuiFont! Hack:h<args>
+
+" }}}
+
+" AUTOCMDS {{{
+
+" let terminal resize scale the internal windows
+autocmd VimResized * :wincmd =
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * MRU
+
+" }}}
+
+" PLUGINS {{{
+
 call plug#begin('~/.vim/plugged') " :echo expand('~')
 
 Plug 'scrooloose/nerdtree'
@@ -141,7 +152,12 @@ Plug 'Yggdroot/LeaderF'
 let g:Lf_ShortcutF = '<C-P>'
 let g:Lf_WorkingDirectoryMode = 'A'
 
+Plug 'google/vim-searchindex'
 call plug#end()
+
+" }}}
 
 "call denite#custom#var('file_rec', 'command',['pt', '--follow', '--nocolor', '--nogroup', '-g:', ''])
 "map <C-P> :DeniteProjectDir -buffer-name=git  file_rec<CR>
+
+" vim: foldmethod=marker
