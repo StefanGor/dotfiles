@@ -1,6 +1,7 @@
 " TEMP/TEST SECTION
 "let g:loaded_youcompleteme = 1 "disables YCM
 "let g:ycm_always_populate_location_list = 1
+let g:ycm_enable_diagnostic_signs = 0 "disabling until I can fix errors
 
 " EDITOR SETTINGS {{{
 set rtp+=~/.vim
@@ -12,6 +13,7 @@ set guifont=Hack:h10
 set lazyredraw
 set undofile
 set shortmess=aAIsT
+set list
 
 " tabs 4 spaces width and indent by 4 spaces with <
 set tabstop=4
@@ -62,6 +64,18 @@ nnoremap <M-j> mz:m+<cr>`z
 nnoremap <M-k> mz:m-2<cr>`z
 vnoremap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vnoremap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+
+" Tab movement using alt + function key
+nnoremap <A-F1> 1gt
+nnoremap <A-F2> 2gt
+nnoremap <A-F3> 3gt
+nnoremap <A-F4> 4gt
+nnoremap <A-F5> 5gt
+nnoremap <A-F6> 6gt
+nnoremap <A-F7> 7gt
+nnoremap <A-F8> 8gt
+nnoremap <A-F9> 9gt
+nnoremap <A-F0> 10gt
 
 " Use CTRL-S for saving, also in Insert mode
 noremap <C-S> :update<CR>
@@ -118,7 +132,8 @@ map <leader>F <Plug>Sneak_S
 Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'yegappan/mru'
-Plug 'bronson/vim-trailing-whitespace'
+"Plug 'bronson/vim-trailing-whitespace'
+Plug 'Yggdroot/indentLine'
 
 Plug 'Valloric/YouCompleteMe'
 let g:ycm_autoclose_preview_window_after_completion=1
