@@ -30,6 +30,12 @@ set splitbelow
 au BufRead,BufNewFile *.txt,*.tex set wrap linebreak nolist textwidth=0 wrapmargin=0
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.meta,*.unity,*.controller,*.anim
 
+set scrolloff=10
+
+" use case-insensitive search unless capital letters are used
+set ignorecase
+set smartcase
+
 " }}}
 
 " NORMAL KEY BINDINGS/MAPPINGS {{{
