@@ -43,13 +43,13 @@ inoremap <C-BS> <C-W>
 nmap S :%s//g<LEFT><LEFT>
 
 " Make movement work on wrapped lines
-nnoremap j gj
-nnoremap 0 g0
-nnoremap k gk
-nnoremap $ g$
+"nnoremap j gj
+"nnoremap 0 g0
+"nnoremap k gk
+"nnoremap $ g$
 
 " Buffers
-nnoremap <F5> :buffers<CR>:buffer<Space>
+nnoremap <F2> :buffers<CR>:buffer<Space>
 noremap <C-Tab> :bn<CR>
 noremap <C-S-Tab> :bp<CR>
 
@@ -173,6 +173,7 @@ Plug 'kshenoy/vim-signature'
 Plug 'Yggdroot/LeaderF'
 let g:Lf_ShortcutF = '<C-P>'
 let g:Lf_WorkingDirectoryMode = 'A'
+nmap <leader>t :LeaderfTag<CR>
 
 Plug 'google/vim-searchindex'
 
