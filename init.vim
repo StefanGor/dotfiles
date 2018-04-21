@@ -139,6 +139,7 @@ nmap <F8> :TagbarToggle<CR>
 
 Plug 'ludovicchabant/vim-gutentags'
 let g:gutentags_cache_dir = expand('$HOME/Documents/Tags')
+let g:gutentags_ctags_exclude = ['*/node_modules/*']
 
 Plug 'junegunn/vim-peekaboo'
 "Plug 'demelev/TagHighlight'
@@ -153,6 +154,8 @@ let g:Lf_ShortcutF = '<C-P>'
 let g:Lf_WorkingDirectoryMode = 'A'
 
 Plug 'google/vim-searchindex'
+
+Plug 'udalov/kotlin-vim'
 call plug#end()
 
 " }}}
