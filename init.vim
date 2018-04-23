@@ -182,6 +182,7 @@ Plug 'xolox/vim-session'
 
 Plug 'mattn/emmet-vim'
 
+Plug 'OrangeT/vim-csharp'
 call plug#end()
 
 " }}}
