@@ -109,6 +109,45 @@ command! Fm :GuiFont! Hack:h10
 command! Fl :GuiFont! Hack:h12
 command! -nargs=1 Font :GuiFont! Hack:h<args>
 
+
+" font functionality from https://github.com/christopher-l/dotfiles/blob/9c67eb42aeac3ade7848fd9aeb152f3e037d4e50/config/nvim/ginit.vim
+let s:default_fontsize = 10
+let s:fontsize = s:default_fontsize
+let s:font = "Hack"
+
+function! SetFont(fontsize) abort
+  if exists('g:GtkGuiLoaded')
+    call rpcnotify(1, 'Gui', 'Font', s:font . ' ' . a:fontsize)
+  else
+    exec "GuiFont " . s:font . ":h" . s:fontsize
+  endif
+endfunction
+
+function! SetFont() abort
+  if exists('g:GtkGuiLoaded')
+    call rpcnotify(1, 'Gui', 'Font', s:font . ' ' . s:fontsize)
+  else
+    exec "GuiFont " . s:font . ":h" . s:fontsize
+  endif
+endfunction
+
+call SetFont()
+
+function! AdjustFontSize(delta)
+  let s:fontsize += a:delta
+  call SetFont()
+endfunction
+
+function! ResetFontSize()
+  let s:fontsize = s:default_fontsize
+  call SetFont()
+endfunction
+
+nnoremap <C-=> :call AdjustFontSize(1)<CR>
+nnoremap <C-+> :call AdjustFontSize(1)<CR>
+nnoremap <C--> :call AdjustFontSize(-1)<CR>
+nnoremap <C-0> :call ResetFontSize()<CR>
+
 " }}}
 
 " AUTOCMDS {{{
@@ -193,4 +232,5 @@ call plug#end()
 "call denite#custom#var('file_rec', 'command',['pt', '--follow', '--nocolor', '--nogroup', '-g:', ''])
 "map <C-P> :DeniteProjectDir -buffer-name=git  file_rec<CR>
 
+"modeline:
 " vim: foldmethod=marker
