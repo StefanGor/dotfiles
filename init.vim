@@ -56,6 +56,8 @@ endfunction
 
 map <leader>w :call ToggleWrap()<CR>
 
+set autoread " refresh external changes when going back to the editor
+au FocusGained * :checktime
 " }}}
 
 " NORMAL KEY BINDINGS/MAPPINGS {{{
@@ -179,7 +181,7 @@ endfunction
 " let terminal resize scale the internal windows
 autocmd VimResized * :wincmd =
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * MRU
+"autocmd VimEnter * MRU
 
 augroup omnisharp_commands
     autocmd!
@@ -240,25 +242,22 @@ map <leader>F <Plug>Sneak_S
 
 Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
+nmap ]h <Plug>GitGutterNextHunk
+nmap [h <Plug>GitGutterPrevHunk
+
 Plug 'yegappan/mru'
 "Plug 'bronson/vim-trailing-whitespace'
 Plug 'Yggdroot/indentLine'
 
-"Plug 'Valloric/YouCompleteMe'
-let g:ycm_autoclose_preview_window_after_completion=1
-
 "Plug 'w0rp/ale'
-"let g:ale_linters = { 'cs': ['OmniSharp'] }
-
-Plug 'OmniSharp/omnisharp-vim'
-"let g:OmniSharp_server_type = 'v1'
-"let g:OmniSharp_server_type = 'roslyn'
-"let g:OmniSharp_server_path = expand('$HOME/Documents/GitHub/roslyn/omnisharp.exe')
-
-Plug 'hauleth/asyncdo.vim'
+let g:ale_linters = { 'cs': ['OmniSharp'] }
 
 Plug 'vim-syntastic/syntastic'
 let g:syntastic_cs_checkers = ['code_checker']
+
+Plug 'OmniSharp/omnisharp-vim'
+
+Plug 'hauleth/asyncdo.vim' " for building with omnisharp
 
 Plug 'jiangmiao/auto-pairs'
 
@@ -275,30 +274,34 @@ let g:gutentags_cache_dir = expand('$HOME/Documents/Tags')
 let g:gutentags_ctags_exclude = ['*/node_modules/*']
 
 Plug 'junegunn/vim-peekaboo'
-"Plug 'demelev/TagHighlight'
+Plug 'demelev/TagHighlight'
 
 "Plug 'tpope/vim-dispatch'
 
 Plug 'kshenoy/vim-signature'
-"Plug 'mhinz/vim-signify' " like gitgutter but does other VCS
 
 Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
 let g:Lf_ShortcutF = '<C-P>'
 let g:Lf_WorkingDirectoryMode = 'A'
 nmap <leader>t :LeaderfTag<CR>
+" Press C-I or tab to open up the help menu
 
 Plug 'google/vim-searchindex'
-
-"Plug 'udalov/kotlin-vim'
 
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
 Plug 'mattn/emmet-vim'
 
-Plug 'OrangeT/vim-csharp'
+Plug 'nickspoons/vim-cs'
 
 Plug 'joshdick/onedark.vim'
+
+Plug 'tpope/vim-unimpaired'
+
+Plug 'farmergreg/vim-lastplace'
+
+Plug 'ajh17/VimCompletesMe'
 call plug#end()
 
 colo onedark

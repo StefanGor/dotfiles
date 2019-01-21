@@ -12,3 +12,10 @@
 	ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
 	ldr = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
 	aliases = "!git config -l | grep alias | cut -c 7-"
+	c- = !git checkout -
+	updm = !git pull origin master
+	pause = !git add -A && git commit -m 'TEMP COMMIT'
+	resume = !git reset HEAD^
+	goback = !git pause && git co - 
+	cleanlocal = !git branch | grep -v master | xargs git branch -d
+	stashpull = !git stash && git pull && git stash apply
