@@ -29,6 +29,7 @@
       :m "[h" #'git-gutter:previous-hunk
       :m "C-s" #'save-buffer
       :m "<f5>" (lambda () (interactive) (find-file "~/.doom.d/config.el"))
+      :m "gi" #'omnisharp-find-implementations
 
       ;; :desc "open config.el" :n "f e d" #'(find-file "~/.doom.d/config.el")
       )
@@ -42,6 +43,7 @@
     treemacs-silent-refresh t
     inhibit-compacting-font-caches t
     omnisharp-expected-server-version "1.32.5"
+    helm-buffer-max-length nil
 )
 
 (setq-default frame-title-format "Code")
