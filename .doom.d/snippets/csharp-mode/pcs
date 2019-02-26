@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: private const string
+# key: pcs
+# --
+private const string $1 = "$2";
+$0

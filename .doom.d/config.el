@@ -1,6 +1,11 @@
 ;;; ~/.doom.d/config.el -*- lexical-binding: t; -*-
 
-;; Place your private configuration here
+;; TODO
+;; investigate ivy's rg command - is it using --follow for symlinks
+;; do all mappings the doom emacs way
+;; use after!
+;; move framegeometry file out into its own file
+
 ;; (after! projecile
   (setq 
 	projectile-indexing-method 'alien
@@ -18,11 +23,10 @@
 
       :desc "clear errors" :n "e c" #'flycheck-clear
 
-      (:desc "jump" :prefix "j"
-        :desc "character" :n "c" #'evil-avy-goto-char
-        )
+      :desc "find symbol" :n "m f s" #'omnisharp-helm-find-symbols
 
-      )
+      (:desc "jump" :prefix "j"
+        :desc "character" :n "c" #'evil-avy-goto-char))
 
       ;; non-leader bindings
       :m "]h" #'git-gutter:next-hunk
@@ -30,23 +34,31 @@
       :m "C-s" #'save-buffer
       :m "<f5>" (lambda () (interactive) (find-file "~/.doom.d/config.el"))
       :m "gi" #'omnisharp-find-implementations
-
-      ;; :desc "open config.el" :n "f e d" #'(find-file "~/.doom.d/config.el")
-      )
-
-(setq
-	evil-escape-key-sequence "fd"
-	doom-font (font-spec :family "Hack" :size 12)
-    large-file-warning-threshold nil
-    require-final-newline nil
-    electric-indent-mode t
-    treemacs-silent-refresh t
-    inhibit-compacting-font-caches t
-    omnisharp-expected-server-version "1.32.5"
-    helm-buffer-max-length nil
+      :m "<f6>" #'treemacs
 )
 
-(setq-default frame-title-format "Code")
+(setq
+ evil-escape-key-sequence "fd"
+ doom-font (font-spec :family "Hack" :size 14)
+ large-file-warning-threshold nil
+ require-final-newline nil
+ electric-indent-mode t
+ treemacs-silent-refresh t
+ inhibit-compacting-font-caches t
+ omnisharp-expected-server-version "1.32.5"
+ helm-buffer-max-length nil
+ mode-require-final-newline nil ;; Stop emacs adding new lines at EOF?
+ require-final-newline nil
+ display-line-numbers-type 'relative
+ ;; https://emacs.stackexchange.com/questions/36745/enable-ivy-fuzzy-matching-everywhere-except-in-swiper
+ ;; https://oremacs.com/2016/04/26/ivy-0.8.0/
+ ivy-re-builders-alist '((counsel-ag . ivy--regex-plus) ;; non-fuzzy for SPC / p - quite slow
+                         (t      . ivy--regex-fuzzy))
+ )
+
+(setq-default
+ frame-title-format "Code"
+ )
 
 ;; web mode
 (defun my-web-mode-hook ()
@@ -72,8 +84,24 @@
             (c-set-offset 'brace-list-open 0)
             ))
 
+;; todo bind properly? copied this from spacemacs config
 (define-key undo-tree-map (kbd "C-/") nil)
+(define-key undo-tree-map (kbd "C-_") nil)
 (define-key evil-motion-state-map (kbd "C-/") 'comment-line)
+
+;; frame font sizes - https://stackoverflow.com/a/24809045
+(global-set-key (kbd "C-_")
+                (lambda ()
+                  (interactive)
+                  (let ((old-face-attribute (face-attribute 'default :height)))
+                    (set-face-attribute 'default nil :height (- old-face-attribute 10)))))
+
+(global-set-key (kbd "C-+")
+                (lambda ()
+                  (interactive)
+                  (let ((old-face-attribute (face-attribute 'default :height)))
+                    (set-face-attribute 'default nil :height (+ old-face-attribute 10)))))
+
 
 (defun transparent(alpha-level no-focus-alpha-level)
  (interactive "nAlpha level (0-100): \nnNo focus alpha level (0-100): ")
