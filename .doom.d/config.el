@@ -10,16 +10,34 @@
 ;; projectile-switch-project-action ? may not be forced to select a file
 ;; might not need spaces between 'p' and 'f' etc?
 
+;; TRIAL SECTION
+(remove-hook 'after-change-major-mode-hook #'doom|highlight-non-default-indentation)  ;; disable yellow highlighting for inconsistent tabs/space
+
+;; https://github.com/Alexander-Miller/treemacs/issues/411
+(setq treemacs-python-executable "C:\\Python37\\python.exe")
+
+;; https://github.com/abo-abo/swiper/issues/925#issuecomment-335789390
+(setq counsel-grep-base-command
+      "rg -i -M 120 --no-heading --line-number --color never '%s' %s")
+(setq counsel-rg-base-command
+      "rg -i -M 120 --no-heading --line-number --color never %s .")
+
+;; may help with git command speed?
+(setq w32-pipe-read-delay 0)
+
+;; todo make this work - marks arent rendered nicely
+(global-evil-fringe-mark-mode)
+(setq-default evil-fringe-mark-show-special t)
+;; (setq-default left-fringe-width 16)
+(setq-default right-fringe-width 30)
+(setq-default evil-fringe-mark-side 'right-fringe)
+
+;; Mappings
 (map! (:leader
       :desc "Find file in project" :nv "p f" #'projectile-find-file
       :desc "M-x" :n "SPC" #'execute-extended-command
 
-      :desc "restart server" :n "m s" #'omnisharp-reload-solution
-      :desc "run code refactoring" :n "m r" #'omnisharp-run-code-action-refactoring
-
       :desc "clear errors" :n "e c" #'flycheck-clear
-
-      ;; :desc "find symbol" :n "m f s" #'omnisharp-helm-find-symbols ;; should be in map
 
       :desc "toggle wrap" :n "t w" #'toggle-truncate-lines
       :desc "toggle debug on error" :n "t d" #'toggle-debug-on-error
@@ -30,30 +48,29 @@
       ;; non-leader bindings
       :n "<f4>" (lambda () (interactive) (find-file "~/Desktop/Other/notes/scratchpad-em.txt"))
       :n "<f5>" (lambda () (interactive) (find-file "~/.doom.d/config.el"))
-      ;; :n "<f6>" #'ranger
-      :n "<f7>" #'treemacs ;; broken?
+      :n "<f6>" #'neotree-toggle
+      ;; :n "<f7>" #'treemacs
       :n "]h" #'git-gutter:next-hunk
       :n "[h" #'git-gutter:previous-hunk
       "C-s" #'save-buffer
-      :n "gi" #'omnisharp-find-implementations ;; should be in map
       :m "C-/" #'comment-line ;; :m works better than :nv - it does one line too many in visual mode
       :m "C-_" #'text-scale-decrease ;; same with this one
       "C-+" #'text-scale-increase
-      :m "M-_" #'downscale-all ;; :m makes it override undo-tree
-      "M-+" #'upscale-all
+      :m "M-_" #'doom/decrease-font-size ;; :m makes it override undo-tree
+      "M-+" #'doom/increase-font-size
 )
 
-;; frame font sizes - https://stackoverflow.com/a/24809045
-(defun downscale-all()
-  (interactive)
-  (let ((old-face-attribute (face-attribute 'default :height)))
-    (set-face-attribute 'default nil :height (- old-face-attribute 10))))
+(map! :map omnisharp-mode-map
+      :nvmi "<M-return>" #'omnisharp-run-code-action-refactoring
+      :n "gi" #'omnisharp-find-implementations
+      ;; :n "gd" #'omnisharp-go-to-definition
+      :n "go" #'omnisharp-go-to-definition-other-window)
 
-(defun upscale-all()
-  (interactive)
-  (let ((old-face-attribute (face-attribute 'default :height)))
-    (set-face-attribute 'default nil :height (+ old-face-attribute 10))))
+(map! :map emacs-lisp-mode-map
+      :localleader
+      :n "v" #'eval-defun)
 
+;; Package config
 (after! helm
   (setq
    helm-mode-fuzzy-match t
@@ -65,7 +82,7 @@
    doom-modeline-buffer-file-name-style 'relative-to-project
    )
    (doom-modeline-def-modeline 'main
-   '(bar matches buffer-info buffer-position selection-info)
+   '(bar matches buffer-info)
    '(misc-info major-mode process vcs checker))
    )
 
@@ -73,6 +90,7 @@
 ;; (doom-modeline-def-modeline 'main
 ;;   '(bar matches buffer-info remote-host buffer-position selection-info)
 ;;   '(misc-info persp-name irc mu4e github debug indent input-method buffer-encoding lsp major-mode process vcs checker))
+
 (after! projectile
   (setq
    projectile-indexing-method 'alien
@@ -94,6 +112,11 @@
    )
   )
 
+(after! evil
+  (setq-default
+   evil-escape-key-sequence "fd"
+   ))
+
 (setq
  evil-escape-key-sequence "fd"
  doom-font (font-spec :family "Hack" :size 14)
@@ -101,8 +124,7 @@
  electric-indent-mode t
  treemacs-silent-refresh t
  inhibit-compacting-font-caches t
- omnisharp-expected-server-version "1.32.5" ;; fix omnisharp-emacs 'already exists' issue
- helm-buffer-max-length nil
+ ;;omnisharp-expected-server-version "1.32.11" ;; fix omnisharp-emacs 'already exists' issue
  mode-require-final-newline nil ;; Stop emacs adding new lines at EOF?
  require-final-newline nil
  display-line-numbers-type 'relative
@@ -118,20 +140,22 @@
 
 ;; todo do I still need both of these hooks and if so, what do they do?
 (add-hook! c-mode
-  (lambda ()
-    (c-set-offset 'arglist-cont-nonempty +)
-    (c-offsets-alist 'arglist-close c-lineup-arglist)
-    )
+  ;; (lambda ()
+    ;; (c-set-offset 'arglist-cont-nonempty +)
+    ;; (c-offsets-alist 'arglist-close c-lineup-arglist)
+    ;; ;; )
   )
 
 (add-hook! csharp-mode
-  (lambda ()
+  ;; (lambda ()
     ;; suggested by https://github.com/josteink/csharp-mode
     ;; (electric-pair-mode 1) makes new methods not work correctly...
     ;; (electric-pair-local-mode 1)
+    (c-set-offset 'arglist-cont-nonempty +)
+    (c-offsets-alist 'arglist-close c-lineup-arglist)
     (c-set-offset 'substatement-open 0)
     (c-set-offset 'brace-list-open 0)
-    )
+    ;; )
   )
 
 (add-to-list 'auto-mode-alist '("\\.cshtml$" . web-mode))
@@ -145,3 +169,9 @@
 (transparent 100 95)
 
 (load! "restoreframe")
+
+;; notes
+;; global-hl-line-mode to disable line highlighting + hl-line-mode
+;;   can then use 'SPC h F' / M-x describe-face to get the face at point to see why its coloured the way it is
+;; ivy-rg - use -tlist --ivy to provide additional args - see counsel-rg definition
+;;
