@@ -11,6 +11,9 @@
 ;; might not need spaces between 'p' and 'f' etc?
 
 ;; TRIAL SECTION
+(menu-bar-mode 1)
+(setq which-key-idle-delay 0.1) ;; needs to be set before entering which-key-mode
+(setq which-key-max-description-length 35)
 (remove-hook 'after-change-major-mode-hook #'doom|highlight-non-default-indentation)  ;; disable yellow highlighting for inconsistent tabs/space
 
 ;; https://github.com/Alexander-Miller/treemacs/issues/411
@@ -151,7 +154,7 @@
     ;; suggested by https://github.com/josteink/csharp-mode
     ;; (electric-pair-mode 1) makes new methods not work correctly...
     ;; (electric-pair-local-mode 1)
-    (c-set-offset 'arglist-cont-nonempty +)
+    (c-set-offset 'arglist-cont-nonempty '+)
     (c-offsets-alist 'arglist-close c-lineup-arglist)
     (c-set-offset 'substatement-open 0)
     (c-set-offset 'brace-list-open 0)
