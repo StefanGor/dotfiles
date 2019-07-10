@@ -280,11 +280,15 @@ Plug 'demelev/TagHighlight'
 
 Plug 'kshenoy/vim-signature'
 
-Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
+"Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
 let g:Lf_ShortcutF = '<C-P>'
 let g:Lf_WorkingDirectoryMode = 'A'
 nmap <leader>t :LeaderfTag<CR>
 " Press C-I or tab to open up the help menu
+
+
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 
 Plug 'google/vim-searchindex'
 
@@ -306,6 +310,9 @@ call plug#end()
 
 colo onedark
 
+" https://github.com/BurntSushi/ripgrep/issues/425 
+"set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+"nnoremap <Leader>g :silent lgrep<Space>
 " }}}
 
 "call denite#custom#var('file_rec', 'command',['pt', '--follow', '--nocolor', '--nogroup', '-g:', ''])

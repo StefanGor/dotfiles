@@ -40,6 +40,7 @@ This function should only modify configuration layer settings."
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      helm
+     ;; ivy
      (auto-completion :variables
                       auto-completion-enable-sort-by-usage t
                       auto-completion-return-key-behavior 'complete
@@ -58,6 +59,7 @@ This function should only modify configuration layer settings."
      ;;        shell-default-position 'bottom)
      ;; spell-checking
      syntax-checking
+     treemacs
      (version-control :variables
                       version-control-diff-side 'left)
      csharp
@@ -640,6 +642,8 @@ before packages are loaded."
   ;; var t = new    //works fine if you do 'new object'
   ;;     {   
   ;; m-/ does text completion suggestion?
+  ;; https://github.com/syohex/emacs-helm-ag/issues/161 - can use M-- SPC / to put in extra args
+  ;; https://gist.github.com/pesterhazy/fabd629fbb89a6cd3d3b92246ff29779 "-tconfig 6.0." to search config files only
 )
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
