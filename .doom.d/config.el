@@ -11,14 +11,21 @@
 ;; might not need spaces between 'p' and 'f' etc?
 
 ;; TRIAL SECTION
+
+;; https://github.com/abo-abo/swiper/issues/551 doesnt do anything i think, does this even apply to fuzzy
+(setq ivy-sort-matches-functions-alist '((t . nil)
+                                         (ivy-completion-in-region)
+                                         (ivy-switch-buffer . ivy-sort-function-buffer)
+                                         (counsel-find-file . ivy-sort-function-buffer)))
+
+
 (menu-bar-mode 1)
 (setq which-key-idle-delay 0.2) ;; needs to be set before entering which-key-mode
 (setq which-key-max-description-length 35)
 (remove-hook 'after-change-major-mode-hook #'doom|highlight-non-default-indentation)  ;; disable yellow highlighting for inconsistent tabs/space
 
 ;; https://github.com/Alexander-Miller/treemacs/issues/411
-(setq treemacs-python-executable "C:\\Python37\\python.exe")
-
+;; (setq treemacs-python-executable "C:\\Python37\\python.exe")
 
 ;; may help with git command speed?
 (setq w32-pipe-read-delay 0)
@@ -29,6 +36,9 @@
 ;; (setq-default left-fringe-width 16)
 (setq-default right-fringe-width 30)
 (setq-default evil-fringe-mark-side 'right-fringe)
+(setq sql-product 'ms)
+;; basename?
+(setq counsel-projectile-find-file-matcher 'counsel-projectile-find-file-matcher-basename)
 
 ;; https://emacs.stackexchange.com/a/336
 (setq compilation-finish-function
@@ -60,6 +70,7 @@
 ;; Mappings
 (map! (:leader
       :desc "Find file in project" :nv "p f" #'projectile-find-file
+      :desc "Find file in project" :nv "." #'projectile-find-file
       :desc "M-x" :n "SPC" #'execute-extended-command
 
       :desc "clear errors" :n "e c" #'flycheck-clear
@@ -76,13 +87,13 @@
       :n "<f5>" (lambda () (interactive) (find-file "~/.doom.d/config.el"))
       :n "<f6>" #'neotree-toggle
       :n "<f7>" #'deadgrep
-      ;; :n "<f7>" #'treemacs
+      :n "<f9>" #'treemacs
       ;; :n "] E" #'flycheck-next-error ;; todo put in an after + map?
       ;; :n "[ E" #'flycheck-previous-error
 
       "C-s" #'save-buffer
-      :m "C-/" #'comment-line ;; :m works better than :nv - it does one line too many in visual mode
-      :m "C-_" #'text-scale-decrease ;; same with this one
+      :nvmi "C-/" #'comment-line ;; this doesnt work well in visual mode
+      :m "C-_" #'text-scale-decrease
       "C-+" #'text-scale-increase
       :m "M-_" #'doom/decrease-font-size ;; :m makes it override undo-tree
       "M-+" #'doom/increase-font-size
@@ -91,13 +102,19 @@
 (map!
  :n "]h" #'git-gutter:next-hunk
  :n "[h" #'git-gutter:previous-hunk
- :n "] E" #'flycheck-next-error
- :n "[ E" #'flycheck-previous-error
+ ;; I don't like jumping around between files with [e
+ :n "[e" #'flycheck-previous-error
+ :n "]e" #'flycheck-next-error
+ :n "]E" #'previous-error
+ :n "[E" #'next-error
  )
 
 (map! :map omnisharp-mode-map
       ;; (:localleader ;; TODO merge non-localleader with normal map??
       ;;   :n "e" :desc "solution errors" #'omnisharp-solution-errors)
+      :i "C-." #'omnisharp-add-dot-and-auto-complete
+      :nvi "M-k" #'c-beginning-of-defun
+      :nvi "M-j" #'c-end-of-defun
       :nvmi "<M-return>" #'omnisharp-run-code-action-refactoring
       :n "gi" #'omnisharp-find-implementations
       :n "gu" #'omnisharp-find-usages
@@ -106,6 +123,7 @@
 
 (map! :map csharp-mode-map ;; needs to be csharp-mode-map or lambda descriptions dont work?
       :localleader
+      :desc "refactor" :n "<return>" #'omnisharp-run-code-action-refactoring
       :desc "errors" :n "e"  (lambda () (interactive) (omnisharp-solution-errors t))
 )
 

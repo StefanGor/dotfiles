@@ -7,3 +7,4 @@
 ;; (package! builtin-package :disable t)
 (package! evil-fringe-mark)
 (package! deadgrep)
+(package! adaptive-wrap)
