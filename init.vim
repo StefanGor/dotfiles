@@ -208,19 +208,21 @@ augroup omnisharp_commands
     autocmd FileType cs nnoremap <buffer> <C-\> :OmniSharpSignatureHelp<CR>
     autocmd FileType cs inoremap <buffer> <C-\> <C-o>:OmniSharpSignatureHelp<CR>
 
-	autocmd FileType cs nnoremap <buffer> <Leader>mr :OmniSharpRestartServer<CR>
+    autocmd FileType cs nnoremap <buffer> <Leader>mr :OmniSharpRestartServer<CR>
 
     " Navigate up and down by method/property/field
     autocmd FileType cs nnoremap <buffer> <C-k> :OmniSharpNavigateUp<CR>
     autocmd FileType cs nnoremap <buffer> <C-j> :OmniSharpNavigateDown<CR>
-	
-	autocmd FileType cs nnoremap <buffer> <Leader>mk :call MakeSolution()<CR>
+
+    autocmd FileType cs nnoremap <buffer> <Leader>mk :call MakeSolution()<CR>
+
+    autocmd FileType cs nnoremap <Leader>ma :OmniSharpGetCodeActions<CR>
+    autocmd FileType cs nnoremap <Leader>mf :OmniSharpCodeFormat<CR>
+    autocmd FileType cs nnoremap <Leader>mt :OmniSharpHighlightTypes<CR>
+    autocmd FileType cs nnoremap <F2> :OmniSharpRename<CR>
+
 augroup END
 
-nnoremap <Leader>ma :OmniSharpGetCodeActions<CR>
-nnoremap <Leader>mf :OmniSharpCodeFormat<CR>
-nnoremap <Leader>mt :OmniSharpHighlightTypes<CR>
-nnoremap <F2> :OmniSharpRename<CR>
 " }}}
 
 " PLUGINS {{{
