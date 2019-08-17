@@ -6,19 +6,21 @@
 
        :completion
        (company           ; the ultimate code completion backend
-        +childframe)
+        +childframe
+        )
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
         (ivy               ; a search engine for love and life
          +fuzzy
          +prescient
-	   ;;  +childframe
-       )
+         ;; +childframe
+         +icons
+        )
 
        :ui
        ;;deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
-       ;;doom-dashboard    ; a nifty splash screen for Emacs
+       doom-dashboard    ; a nifty splash screen for Emacs
        ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
        ;;fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE tags
@@ -61,6 +63,7 @@
 
        :term
        ;;eshell            ; a consistent, cross-platform shell (WIP)
+       ;;shell             ; a terminal REPL for Emacs
        ;;term              ; terminals in Emacs
        ;;vterm             ; another terminals in Emacs
 
@@ -121,14 +124,12 @@
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
+       ;;org
        ;;(org              ; organize your plain life in plain text
-       ;; +attach          ; custom attachment system
-       ;; +babel           ; running code in org
-       ;; +capture         ; org-capture in and outside of Emacs
-       ;; +export          ; Exporting org to whatever you want
-       ;; +habit           ; Keep track of your habits
-       ;; +present         ; Emacs for presentations
-       ;; +protocol)       ; Support for org-protocol:// links
+       ;; +dragndrop       ; file drag & drop support
+       ;; +ipython         ; ipython support for babel
+       ;; +pandoc          ; pandoc integration into org's exporter
+       ;; +present)        ; using Emacs for presentations
        ;;perl              ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
