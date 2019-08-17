@@ -1,0 +1,31 @@
+#+TITLE: notes
+
+* ivy
+ivy-read example usage:
+(ivy-read "Your choice:"
+          '("apple" "plum" "orange")
+          :action (lambda (choice)
+                    (message "I chose %s" choice)))
+
+pressing C-SPC while doing ivy search lets you preview
+counsel-projectile-find-file-matcher might need to change this to match basename only?
+* which key
+explicit abort key
+:desc "Which key abort" "ESC" #'which-key-abort
+
+* omnisharp
+after finding usages, C-o will open in alternate window to <Enter>
+omnisharp-solution-errors can be invoked with errors-only = true by going 'SPC u <M-x>' to use universal argument, this is due to (interactive "P")
+apparently there is a way to use extra dlls e.g. roslynator, see omnisharp githu b
+
+* evil
+g- is used to decrement: (evil-numbers/dec-at-pt), g= to increment
+
+* org
+pressing S-TAB enough times will expand all headers
+
+* misc
+swiper is cool, SPC / b
+undo-propose is a possibly better alternative to undo-tree?
+As a side note, the functionality of avy-goto-char, avy-goto-char-2 and avy-goto-line are already available on the gsf, gss, and gsj/gsk keys, respectively. https://github.com/hlissner/doom-emacs/issues/1643
+C-M-a C-M-e to move between functions in C mode
