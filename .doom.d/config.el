@@ -1,23 +1,41 @@
 ;;; ~/.doom.d/config.el -*- lexical-binding: t; -*-
 
-;; TODO
-;; use after!/localleader/:map for mappings
-;; customise pretty-code-symbols-alist
-;; disable magit or get emacs sqlite "emacsql-sqlite-ensure-binary: No EmacSQL SQLite binary available, aborting
-;; moving up and down candidates when selecting buffers is quite slow - is ivy-rich to blame?
-;; do you need a lambda in add-hook!
-;; doom-modeline config? seagle's one is now being used
-;; projectile-switch-project-action ? may not be forced to select a file
-;; might not need spaces between 'p' and 'f' etc?
+;;; TRIAL SECTION
 
-;; TRIAL SECTION
+;; (use-package eglot
+;;   :commands (eglot eglot-ensure)
+;;   :hook ((python-mode . eglot-ensure)
+;;          (csharp-mode . eglot-ensure))
+;;   :config
+;;   (progn
+;;     (define-key eglot-mode-map (kbd "C-c e r") 'eglot-rename)
+;;     (define-key eglot-mode-map (kbd "C-c e f") 'eglot-format)
+;;     (define-key eglot-mode-map (kbd "C-c e h") 'eglot-help-at-point)
+;;     (add-to-list 'eglot-server-programs
+;;                  `(csharp-mode . ((concat omnisharp-cache-directory "/server/v1.32.11/OmniSharp.exe" ) "-lsp")))))
 
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+(which-function-mode 1)
+(defcustom  my/which-function-max-width 32 ;; https://github.com/Atman50/emacs-config#speed-up-line-movement
+  "The maximum width of the which-function string."
+  :group 'my-configuration
+  :type 'integer)
+(advice-add #'which-function :filter-return
+            (lambda (s) (when (stringp s)
+                          (if (< (string-width s) my/which-function-max-width) s
+                            (concat (truncate-string-to-width s (- my/which-function-max-width 3)) "...")))))
+
+(setq auto-save-interval 20)
+(setq auto-save-default t)
+(setq make-backup-files t)
+
+(setq auto-window-vscroll nil) ;; https://github.com/Atman50/emacs-config#speed-up-line-movement
 ;; https://github.com/abo-abo/swiper/issues/551 doesnt do anything i think, does this even apply to fuzzy
 (setq ivy-sort-matches-functions-alist '((t . nil)
                                          (ivy-completion-in-region)
                                          (ivy-switch-buffer . ivy-sort-function-buffer)
                                          (counsel-find-file . ivy-sort-function-buffer)))
-
 
 (menu-bar-mode 1)
 (setq which-key-idle-delay 0.2) ;; needs to be set before entering which-key-mode
@@ -36,38 +54,13 @@
 ;; (setq-default left-fringe-width 16)
 (setq-default right-fringe-width 30)
 (setq-default evil-fringe-mark-side 'right-fringe)
-(setq sql-product 'ms)
 ;; basename?
 (setq counsel-projectile-find-file-matcher 'counsel-projectile-find-file-matcher-basename)
-
-;; https://emacs.stackexchange.com/a/336
-(setq compilation-finish-function
-  (lambda (buf str)
-    (if (null (string-match ".*exited abnormally.*" str))
-        ;;no errors, make the compilation window go away in a few seconds
-        (progn
-          (run-at-time
-           "2 sec" nil 'delete-windows-on
-           (get-buffer-create "*compilation*"))
-          (message "No Compilation Errors!")))))
-
-(defun toggle-flycheck-error-buffer ()
-  "toggle a flycheck error buffer."
-  (interactive)
-  (if (string-match-p "Flycheck errors" (format "%s" (window-list)))
-      (dolist (w (window-list))
-        (when (string-match-p "*Flycheck errors*" (buffer-name (window-buffer w)))
-          (delete-window w)
-          ))
-    (flycheck-list-errors)
-    )
-  )
-(global-set-key (kbd "<f8>") 'toggle-flycheck-error-buffer)
 
 ;; https://github.com/hlissner/doom-emacs/issues/1568
 (setq-hook! '(prog-mode-hook text-mode-hook conf-mode-hook) show-trailing-whitespace nil)
 
-;; Mappings
+;;; Mappings
 (map! (:leader
       :desc "Find file in project" :nv "p f" #'projectile-find-file
       :desc "Find file in project" :nv "." #'projectile-find-file
@@ -87,9 +80,8 @@
       :n "<f5>" (lambda () (interactive) (find-file "~/.doom.d/config.el"))
       :n "<f6>" #'neotree-toggle
       :n "<f7>" #'deadgrep
+      :nvmi "<f8>" #'toggle-flycheck-error-buffer
       :n "<f9>" #'treemacs
-      ;; :n "] E" #'flycheck-next-error ;; todo put in an after + map?
-      ;; :n "[ E" #'flycheck-previous-error
 
       "C-s" #'save-buffer
       :nvmi "C-/" #'comment-line ;; this doesnt work well in visual mode
@@ -109,7 +101,7 @@
  :n "[E" #'next-error
  )
 
-(map! :map omnisharp-mode-map
+(map! :map csharp-mode-map
       ;; (:localleader ;; TODO merge non-localleader with normal map??
       ;;   :n "e" :desc "solution errors" #'omnisharp-solution-errors)
       :i "C-." #'omnisharp-add-dot-and-auto-complete
@@ -134,7 +126,7 @@
 (map! :map ivy-switch-buffer-map
       "C-c C-k" #'ivy-switch-buffer-kill) ;; This is on C-o C-k
 
-;; Package config
+;;; Package config
 (after! helm
   (setq
    helm-mode-fuzzy-match t
@@ -158,8 +150,6 @@
 (after! projectile
   (setq
    projectile-indexing-method 'alien
-   ;; do I even need tags, probably not tbh
-   ;; projectile-tags-command "ctags.exe -R -e --language-force=C#"
    projectile-enable-caching t
    projectile-globally-ignored-file-suffixes '(".exe" ".dll") ;; TODO this doesnt work...
    projectile-globally-ignored-files '("TAGS" "tags")
@@ -175,23 +165,17 @@
    ivy-use-ignore-default nil ;; dont ignore files that start with a dot. can toggle this with c-c c-a, or if it is off, start your search with a '.'
 
    ;; https://github.com/abo-abo/swiper/issues/925#issuecomment-335789390
-   ;; counsel-grep-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s"
-   ;; counsel-rg-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s"
+   counsel-grep-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s"
+   counsel-rg-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s"
    )
   )
-
-(after! company
-  ;; https://github.com/patrickt/emacs/blob/master/init.el#L237
-  (let ((map company-active-map))
-    (mapc (lambda (x) (define-key map (format "%d" x)
-                        `(lambda () (interactive) (company-complete-number ,x))))
-          (number-sequence 0 9))))
 
 (after! evil
   (setq-default
    evil-escape-key-sequence "fd"
    ))
 
+;;; Other setq
 (setq
  evil-escape-key-sequence "fd"
  doom-font (font-spec :family "Hack" :size 12)
@@ -199,10 +183,11 @@
  electric-indent-mode t
  treemacs-silent-refresh t
  inhibit-compacting-font-caches t
- ;;omnisharp-expected-server-version "1.32.11" ;; fix omnisharp-emacs 'already exists' issue
  mode-require-final-newline nil ;; Stop emacs adding new lines at EOF?
  require-final-newline nil
  display-line-numbers-type 'relative
+ treemacs-git-mode 'deferred
+ sql-product 'ms
  )
 
 (setq-default
@@ -211,14 +196,6 @@
 
 (add-hook! web-mode
   (setq web-mode-enable-block-face nil) ;; disable black bg for code in razor files
-  )
-
-;; todo do I still need both of these hooks and if so, what do they do?
-(add-hook! c-mode
-  ;; (lambda ()
-    ;; (c-set-offset 'arglist-cont-nonempty +)
-    ;; (c-offsets-alist 'arglist-close c-lineup-arglist)
-    ;; ;; )
   )
 
 (add-hook! csharp-mode
@@ -236,26 +213,34 @@
 (add-to-list 'auto-mode-alist '("\\.cshtml$" . web-mode))
 ;; (add-to-list 'auto-mode-alist '("\\.config$" . fundamental-mode)) ;; xml mode really slow
 
+;;; Functions
 (defun transparent(alpha-level no-focus-alpha-level)
  (interactive "nAlpha level (0-100): \nnNo focus alpha level (0-100): ")
  (set-frame-parameter (selected-frame) 'alpha (list alpha-level no-focus-alpha-level))
  (add-to-list 'default-frame-alist `(alpha ,alpha-level)))
-
 (transparent 100 95)
 
 (load! "restoreframe")
 
-;; notes
-;; global-hl-line-mode to disable line highlighting + hl-line-mode
-;;   can then use 'SPC h F' / M-x describe-face to get the face at point to see why its coloured the way it is
-;; ivy-rg - use -tlist --ivy to provide additional args - see counsel-rg definition
-;; counsel-projectile-sort-files to make complete matches show above partial matches? there was a
-;;  github thread about this but i lost it
-;;
+;; https://emacs.stackexchange.com/a/336
+(setq compilation-finish-function
+  (lambda (buf str)
+    (if (null (string-match ".*exited abnormally.*" str))
+        ;;no errors, make the compilation window go away in a few seconds
+        (progn
+          (run-at-time
+           "2 sec" nil 'delete-windows-on
+           (get-buffer-create "*compilation*"))
+          (message "No Compilation Errors!")))))
 
-;;new
-;;(define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action)
-(setq
- treemacs-git-mode 'deferred
- )
-
+(defun toggle-flycheck-error-buffer ()
+  "toggle a flycheck error buffer."
+  (interactive)
+  (if (string-match-p "Flycheck errors" (format "%s" (window-list)))
+      (dolist (w (window-list))
+        (when (string-match-p "*Flycheck errors*" (buffer-name (window-buffer w)))
+          (delete-window w)
+          ))
+    (flycheck-list-errors)
+    )
+  )
