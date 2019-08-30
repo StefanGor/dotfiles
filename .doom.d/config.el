@@ -14,6 +14,14 @@
 ;;     (add-to-list 'eglot-server-programs
 ;;                  `(csharp-mode . ((concat omnisharp-cache-directory "/server/v1.32.11/OmniSharp.exe" ) "-lsp")))))
 
+(define-key minibuffer-inactive-mode-map [mouse-1] #'ignore) ;https://www.reddit.com/r/emacs/comments/6smbgj/is_there_any_way_to_disable_opening_up_the/
+;;evil-forward-arg?
+(setq +word-wrap-extra-indent 'single)
+(+global-word-wrap-mode +1)
+
+;; from discord
+(setq doom-themes-treemacs-theme "doom-colors")
+
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 (which-function-mode 1)
@@ -29,6 +37,10 @@
 (setq auto-save-interval 20)
 (setq auto-save-default t)
 (setq make-backup-files t)
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
 (setq auto-window-vscroll nil) ;; https://github.com/Atman50/emacs-config#speed-up-line-movement
 ;; https://github.com/abo-abo/swiper/issues/551 doesnt do anything i think, does this even apply to fuzzy
@@ -68,6 +80,7 @@
 
       :desc "clear errors" :n "e c" #'flycheck-clear
       :desc "check buffer" :n "e e" #'flycheck-buffer
+      :desc "refresh errors" :n "e r" (λ! (flycheck-clear) (flycheck-buffer))
 
       :desc "toggle wrap" :n "t w" #'toggle-truncate-lines
       :desc "toggle debug on error" :n "t d" #'toggle-debug-on-error
@@ -76,12 +89,11 @@
         :desc "character" :n "c" #'evil-avy-goto-char))
 
       ;; non-leader bindings
-      :n "<f4>" (lambda () (interactive) (find-file "~/Desktop/Other/notes/scratchpad-em.txt"))
-      :n "<f5>" (lambda () (interactive) (find-file "~/.doom.d/config.el"))
+      :n "<f5>" (λ! (find-file "~/.doom.d/config.el"))
       :n "<f6>" #'neotree-toggle
       :n "<f7>" #'deadgrep
       :nvmi "<f8>" #'toggle-flycheck-error-buffer
-      :n "<f9>" #'treemacs
+      :n "<f9>" #'+treemacs/toggle
 
       "C-s" #'save-buffer
       :nvmi "C-/" #'comment-line ;; this doesnt work well in visual mode
@@ -89,17 +101,17 @@
       "C-+" #'text-scale-increase
       :m "M-_" #'doom/decrease-font-size ;; :m makes it override undo-tree
       "M-+" #'doom/increase-font-size
-)
 
-(map!
- :n "]h" #'git-gutter:next-hunk
- :n "[h" #'git-gutter:previous-hunk
- ;; I don't like jumping around between files with [e
- :n "[e" #'flycheck-previous-error
- :n "]e" #'flycheck-next-error
- :n "]E" #'previous-error
- :n "[E" #'next-error
- )
+      :n "<C-tab>" #'evil-switch-to-windows-last-buffer
+
+      :n "]h" #'git-gutter:next-hunk
+      :n "[h" #'git-gutter:previous-hunk
+      ;; I don't like jumping around between files with [e
+      :n "[e" #'flycheck-previous-error
+      :n "]e" #'flycheck-next-error
+      :n "]E" #'previous-error
+      :n "[E" #'next-error
+)
 
 (map! :map csharp-mode-map
       ;; (:localleader ;; TODO merge non-localleader with normal map??
@@ -113,7 +125,7 @@
       ;; :n "gd" #'omnisharp-go-to-definition
       :n "go" #'omnisharp-go-to-definition-other-window)
 
-(map! :map csharp-mode-map ;; needs to be csharp-mode-map or lambda descriptions dont work?
+(map! :map csharp-mode-map ;; needs to be csharp-mode-map or lambda descriptions
       :localleader
       :desc "refactor" :n "<return>" #'omnisharp-run-code-action-refactoring
       :desc "errors" :n "e"  (lambda () (interactive) (omnisharp-solution-errors t))
@@ -135,7 +147,8 @@
 
 (after! doom-modeline
   (setq
-   doom-modeline-buffer-file-name-style 'relative-to-project
+   doom-modeline-buffer-file-name-style 'file-name
+   doom-modeline-buffer-encoding nil
    )
    (doom-modeline-def-modeline 'main
    '(bar matches buffer-info)
@@ -165,8 +178,8 @@
    ivy-use-ignore-default nil ;; dont ignore files that start with a dot. can toggle this with c-c c-a, or if it is off, start your search with a '.'
 
    ;; https://github.com/abo-abo/swiper/issues/925#issuecomment-335789390
-   counsel-grep-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s"
-   counsel-rg-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s"
+   ;; counsel-grep-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s" ;; broken
+   ;; counsel-rg-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s"
    )
   )
 
@@ -174,6 +187,11 @@
   (setq-default
    evil-escape-key-sequence "fd"
    ))
+
+(after! evil-owl
+  (setq evil-owl-extra-posframe-args '(:width 50 :height 20)
+        evil-owl-register-char-limit 50))
+(evil-owl-mode)
 
 ;;; Other setq
 (setq
