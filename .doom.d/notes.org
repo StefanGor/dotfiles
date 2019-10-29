@@ -7,7 +7,6 @@ investigate completion-styles variable?
 use after!/localleader/:map for mappings
 customise pretty-code-symbols-alist
 projectile-switch-project-action ? may not be forced to select a file
-might not need spaces between 'p' and 'f' etc?
 
 * ivy
 ivy-read example usage:
@@ -21,6 +20,12 @@ counsel-projectile-find-file-matcher might need to change this to match basename
 pass params to rg: '--no-ignore -t cs -- <search terms>'
 
 ctrl s to view history
+
+honestly fuzzy isnt that great - disable fuzzy and just use a
+single space as a fuzzy match e.g. 'search cshtml' for fuzzy finding a file
+also ivy-posframe seems to break with random bugs
+I removed a bunch of commented out ivy config on 18/09/19 - see commit on that day
+in case I want to go back
 * which key
 explicit abort key
 :desc "Which key abort" "ESC" #'which-key-abort

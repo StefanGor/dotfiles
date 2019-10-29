@@ -43,16 +43,6 @@
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-(which-function-mode 1)
-(defcustom  my/which-function-max-width 32 ;; https://github.com/Atman50/emacs-config#speed-up-line-movement
-  "The maximum width of the which-function string."
-  :group 'my-configuration
-  :type 'integer)
-(advice-add #'which-function :filter-return
-            (lambda (s) (when (stringp s)
-                          (if (< (string-width s) my/which-function-max-width) s
-                            (concat (truncate-string-to-width s (- my/which-function-max-width 3)) "...")))))
-
 (setq auto-save-interval 20)
 (setq auto-save-default t)
 (setq make-backup-files t)
@@ -62,11 +52,6 @@
       `((".*" ,temporary-file-directory t)))
 
 (setq auto-window-vscroll nil) ;; https://github.com/Atman50/emacs-config#speed-up-line-movement
-;; https://github.com/abo-abo/swiper/issues/551 doesnt do anything i think, does this even apply to fuzzy
-(setq ivy-sort-matches-functions-alist '((t . nil)
-                                         (ivy-completion-in-region)
-                                         (ivy-switch-buffer . ivy-sort-function-buffer)
-                                         (counsel-find-file . ivy-sort-function-buffer)))
 
 (menu-bar-mode 1)
 (setq which-key-idle-delay 0.2) ;; needs to be set before entering which-key-mode
@@ -76,17 +61,12 @@
 ;; https://github.com/Alexander-Miller/treemacs/issues/411
 ;; (setq treemacs-python-executable "C:\\Python37\\python.exe")
 
-;; may help with git command speed?
-(setq w32-pipe-read-delay 0)
-
 ;; todo make this work - marks arent rendered nicely
 ;;(global-evil-fringe-mark-mode)
 (setq-default evil-fringe-mark-show-special t)
 ;; (setq-default left-fringe-width 16)
 (setq-default right-fringe-width 30)
 (setq-default evil-fringe-mark-side 'right-fringe)
-;; basename?
-(setq counsel-projectile-find-file-matcher 'counsel-projectile-find-file-matcher-basename)
 
 ;; https://github.com/hlissner/doom-emacs/issues/1568
 (setq-hook! '(prog-mode-hook text-mode-hook conf-mode-hook) show-trailing-whitespace nil)
@@ -115,8 +95,6 @@
 
       "C-s" #'basic-save-buffer
       :nvmi "C-/" #'comment-line ;; this doesnt work well in visual mode
-      :m "C-_" #'text-scale-decrease
-      "C-+" #'text-scale-increase
       :m "M-_" #'doom/decrease-font-size ;; :m makes it override undo-tree
       "M-+" #'doom/increase-font-size
 
@@ -137,8 +115,6 @@
       ;; (:localleader ;; TODO merge non-localleader with normal map??
       ;;   :n "e" :desc "solution errors" #'omnisharp-solution-errors)
       :i "C-." #'omnisharp-add-dot-and-auto-complete
-      :nvi "M-k" #'c-beginning-of-defun
-      :nvi "M-j" #'c-end-of-defun
       :nvmi "<M-return>" #'omnisharp-run-code-action-refactoring
       :n "gi" #'omnisharp-find-implementations
       :n "gu" #'omnisharp-find-usages
@@ -157,6 +133,9 @@
 
 (map! :map ivy-switch-buffer-map
       "C-c C-k" #'ivy-switch-buffer-kill) ;; This is on C-o C-k
+
+(map! :map ivy-minibuffer-map
+      "C-i" #'ivy-rotate-preferred-builders)
 
 ;;; Package config
 (after! org
@@ -197,14 +176,7 @@
 
 (after! ivy
   (setq
-   ;; https://emacs.stackexchange.com/questions/36745/enable-ivy-fuzzy-matching-everywhere-except-in-swiper
-   ;; https://oremacs.com/2016/04/26/ivy-0.8.0/
-   ;; ivy-re-builders-alist '((counsel-ag . ivy--regex-plus) ;; non-fuzzy for SPC / p - quite slow
-   ;;                         (t      . ivy--regex-fuzzy))
    ivy-use-ignore-default nil ;; dont ignore files that start with a dot. can toggle this with c-c c-a, or if it is off, start your search with a '.'
-
-   ;; https://github.com/abo-abo/swiper/issues/925#issuecomment-335789390
-   ;; counsel-grep-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s" ;; broken
    ;; counsel-rg-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s"
    ;; ivy 0.13 says to not use '-S'
    counsel-rg-base-command "rg -M 140 --no-heading --line-number --color never %s ."
@@ -244,6 +216,7 @@
  display-line-numbers-type 'relative
  treemacs-git-mode 'deferred
  sql-product 'ms
+ w32-pipe-read-delay 0
  )
 
 (setq-default
@@ -259,6 +232,7 @@
     ;; suggested by https://github.com/josteink/csharp-mode
     ;; (electric-pair-mode 1) makes new methods not work correctly...
     ;; (electric-pair-local-mode 1)
+    (c-set-offset 'arglist-intro '+) ;; First argument after open bracket (for constructors)
     (c-set-offset 'arglist-cont-nonempty '+)
     ;; (c-offsets-alist 'arglist-close 'c-lineup-arglist)
     (c-set-offset 'substatement-open 0)

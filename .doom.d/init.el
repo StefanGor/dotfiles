@@ -11,10 +11,10 @@
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
         (ivy               ; a search engine for love and life
-         +fuzzy
+         ;;+fuzzy
          +prescient
-         ;; +childframe
-         +icons
+         ;;+childframe
+         ;;+icons
         )
 
        :ui
@@ -35,7 +35,7 @@
         +defaults)       ; default popup rules
        ;;pretty-code       ; replace bits of code with pretty symbols
        ;;tabs              ; an tab bar for Emacs
-       treemacs          ; a project drawer, like neotree but cooler
+       ;; treemacs          ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        ;;vi-tilde-fringe   ; fringe tildes to mark beyond EOB
@@ -57,7 +57,7 @@
 
        :emacs
        (dired            ; making dired pretty [functional]
-       ;;+ranger         ; bringing the goodness of ranger to dired
+       ;; +ranger         ; bringing the goodness of ranger to dired
         +icons          ; colorful icons for dired-mode
         )
        electric          ; smarter, keyword-based electric-indent
@@ -83,7 +83,7 @@
        ;;gist              ; interacting with github gists
        lookup           ; helps you navigate your code and documentation
         ;;+docsets)        ; ...or in Dash docsets locally
-       ;;lsp
+       lsp
        ;;macos             ; MacOS-specific commands
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
@@ -125,7 +125,7 @@
        ;;latex             ; writing papers in Emacs has never been so fun
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
-       markdown          ; writing docs for people to ignore
+       ;; markdown          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
