@@ -2,12 +2,10 @@
 
 * TODO
 make omnisharp company case sensitive? order of results not great
-* general
+investigate completion-styles variable?
+** general
 use after!/localleader/:map for mappings
 customise pretty-code-symbols-alist
-disable magit or get emacs sqlite "emacsql-sqlite-ensure-binary: No EmacSQL SQLite binary available, aborting
-moving up and down candidates when selecting buffers is quite slow - is ivy-rich to blame?
-not the case anymore?
 projectile-switch-project-action ? may not be forced to select a file
 might not need spaces between 'p' and 'f' etc?
 
@@ -26,25 +24,42 @@ ctrl s to view history
 * which key
 explicit abort key
 :desc "Which key abort" "ESC" #'which-key-abort
+SPC h b = counsel-descbinds
 
 * omnisharp
 after finding usages, C-o will open in alternate window to <Enter>
 omnisharp-solution-errors can be invoked with errors-only = true by going 'SPC u <M-x>' to use universal argument, this is due to (interactive "P")
-apparently there is a way to use extra dlls e.g. roslynator, see omnisharp githu b
+apparently there is a way to use extra dlls e.g. roslynator, see omnisharp github
 
 * evil
 g- is used to decrement: (evil-numbers/dec-at-pt), g= to increment
 
 * org
 pressing S-TAB enough times will expand all headers
+theres a way to control which level we expand headings to when we open a file by
+changing the #+title part of the file, could try this out
+ctrl-enter for a new bullet point
+gh/gj/gk/gl for navigation
 
+* window manip
+C-w m m to maximize/unmaximise a buffer
 * misc
 swiper is cool, SPC / b
 undo-propose is a possibly better alternative to undo-tree?
 As a side note, the functionality of avy-goto-char, avy-goto-char-2 and avy-goto-line are already available on the gsf, gss, and gsj/gsk keys, respectively. https://github.com/hlissner/doom-emacs/issues/1643
-C-M-a C-M-e to move between functions in C mode
 global-hl-line-mode to disable line highlighting + hl-line-mode
 can then use 'SPC h F' / M-x describe-face to get the face at point to see why its coloured the way it is
 ivy-rg - use -tlist --ivy to provide additional args - see counsel-rg definition
 counsel-projectile-sort-files to make complete matches show above partial matches?
 there was a github thread about this but i lost it
+https://lists.gnu.org/archive/html/emacs-devel/2008-02/msg00807.html
+ivy-posframe needs to be LF line ending not CRLF, probably due to the 'Local
+variables' section at the end...
+* new
+spc / j for ivy/jump-list
+spc / / for swiper
+spc c C / spc p C to rerun compliation
+doom/help-search is cool
+SPC h d {k,i,c} for config files
+vc-region-history
+vc-region-history

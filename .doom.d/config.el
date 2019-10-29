@@ -14,6 +14,25 @@
 ;;     (add-to-list 'eglot-server-programs
 ;;                  `(csharp-mode . ((concat omnisharp-cache-directory "/server/v1.32.11/OmniSharp.exe" ) "-lsp")))))
 
+;; (setq +ivy-buffer-preview t) ;; preview buffers when using spc b b
+
+(global-set-key (kbd "<C-f2>") 'bm-toggle)
+(global-set-key (kbd "<f2>")   'bm-next)
+(global-set-key (kbd "<S-f2>") 'bm-previous)
+
+(global-set-key (kbd "<left-fringe> <mouse-5>") 'bm-next-mouse)
+(global-set-key (kbd "<left-fringe> <mouse-4>") 'bm-previous-mouse)
+(global-set-key (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
+(setq bm-marker 'bm-marker-right)
+
+;; stolen from discord
+(defun quote-word-at-point ()
+  (interactive)
+  (cl-destructuring-bind (beg . end)
+      (bounds-of-thing-at-point 'word)
+    (evil-surround-region beg end nil ?\")))
+(map! :n "g'" #'quote-word-at-point)
+
 (define-key minibuffer-inactive-mode-map [mouse-1] #'ignore) ;https://www.reddit.com/r/emacs/comments/6smbgj/is_there_any_way_to_disable_opening_up_the/
 ;;evil-forward-arg?
 (setq +word-wrap-extra-indent 'single)
@@ -74,7 +93,6 @@
 
 ;;; Mappings
 (map! (:leader
-      :desc "Find file in project" :nv "p f" #'projectile-find-file
       :desc "Find file in project" :nv "." #'projectile-find-file
       :desc "M-x" :n "SPC" #'execute-extended-command
 
@@ -95,7 +113,7 @@
       :nvmi "<f8>" #'toggle-flycheck-error-buffer
       :n "<f9>" #'+treemacs/toggle
 
-      "C-s" #'save-buffer
+      "C-s" #'basic-save-buffer
       :nvmi "C-/" #'comment-line ;; this doesnt work well in visual mode
       :m "C-_" #'text-scale-decrease
       "C-+" #'text-scale-increase
@@ -111,6 +129,8 @@
       :n "]e" #'flycheck-next-error
       :n "]E" #'previous-error
       :n "[E" #'next-error
+      :nvi "M-j" (λ! (beginning-of-defun -1)) ;; theres actually a evil/next-beginning-of-method btw
+      :nvi "M-k" #'beginning-of-defun
 )
 
 (map! :map csharp-mode-map
@@ -139,6 +159,12 @@
       "C-c C-k" #'ivy-switch-buffer-kill) ;; This is on C-o C-k
 
 ;;; Package config
+(after! org
+  (setq
+   ;; org-startup-folded nil ;; makes all sections expanded by default
+   )
+  )
+
 (after! helm
   (setq
    helm-mode-fuzzy-match t
@@ -152,7 +178,7 @@
    )
    (doom-modeline-def-modeline 'main
    '(bar matches buffer-info)
-   '(misc-info major-mode process checker))
+   '(misc-info major-mode process vcs checker))
    )
 
 ;; only here for direct comparison
@@ -180,20 +206,32 @@
    ;; https://github.com/abo-abo/swiper/issues/925#issuecomment-335789390
    ;; counsel-grep-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s" ;; broken
    ;; counsel-rg-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s"
+   ;; ivy 0.13 says to not use '-S'
+   counsel-rg-base-command "rg -M 140 --no-heading --line-number --color never %s ."
    )
   )
 
 (after! evil
   (setq-default
    evil-escape-key-sequence "fd"
-   ))
+   )
+  (setq
+   evil-want-fine-undo t)
+  )
 
 (after! evil-owl
   (setq evil-owl-extra-posframe-args '(:width 50 :height 20)
-        evil-owl-register-char-limit 50))
+        evil-owl-max-string-length 50))
 (evil-owl-mode)
 
-;;; Other setq
+(after! company
+  (setq
+   company-idle-delay 0.2
+   company-tooltip-idle-delay 0.2
+   company-search-regexp-function #'company-search-flex-regexp ;; doesnt do anything?
+   ))
+
+;;; Generic setq
 (setq
  evil-escape-key-sequence "fd"
  doom-font (font-spec :family "Hack" :size 12)
@@ -225,6 +263,7 @@
     ;; (c-offsets-alist 'arglist-close 'c-lineup-arglist)
     (c-set-offset 'substatement-open 0)
     (c-set-offset 'brace-list-open 0)
+    (setq lsp-clients-csharp-language-server-path (expand-file-name "~/.omnisharp/omnisharp-win-x64/OmniSharp.exe"))
     ;; )
   )
 
@@ -251,6 +290,15 @@
            (get-buffer-create "*compilation*"))
           (message "No Compilation Errors!")))))
 
+;; fix 'Symbol’s function definition is void: compilation--default-buffer-name' error???
+(defun compilation--default-buffer-name (name-of-mode)
+  (cond ((or (eq major-mode (intern-soft name-of-mode))
+             (eq major-mode (intern-soft (concat name-of-mode "-mode"))))
+   (buffer-name))
+  (t
+   (concat "*" (downcase name-of-mode) "*"))))
+
+
 (defun toggle-flycheck-error-buffer ()
   "toggle a flycheck error buffer."
   (interactive)
@@ -262,3 +310,11 @@
     (flycheck-list-errors)
     )
   )
+
+;;; def-packages
+(def-package! imenu-list
+  :commands imenu-list-smart-toggle)
+(map!
+ :leader
+ (:prefix "o"
+   :desc "Imenu list" "i" #'imenu-list-smart-toggle))

@@ -48,7 +48,7 @@
        fold              ; (nigh) universal code folding
        ;;(format +onsave)  ; automated prettiness
        ;;lispy             ; vim for lisp, for people who dont like vim
-       ;;multiple-cursors  ; editing in many places at once
+       multiple-cursors  ; editing in many places at once
        ;;objed             ; text object editing for the innocen
        ;;parinfer          ; turn lisp into python, sort of
        rotate-text       ; cycle region at point between text candidates
@@ -61,6 +61,7 @@
         +icons          ; colorful icons for dired-mode
         )
        electric          ; smarter, keyword-based electric-indent
+       ibuffer
        vc                ; version-control and Emacs, sitting in a tree
 
        :term
@@ -74,10 +75,10 @@
        ;;debugger          ; FIXME stepping through code, to help you add bugs
        ;;direnv
        ;;docker
-       editorconfig      ; let someone else argue about tabs vs spaces
+       ;; editorconfig      ; let someone else argue about tabs vs spaces
        ;;ein               ; tame Jupyter notebooks with emacs
-       eval              ; run code, run (also, repls)
-       flycheck          ; tasing you for every semicolon you forget
+       (eval +overlay)              ; run code, run (also, repls)
+       (flycheck +childframe)          ; tasing you for every semicolon you forget
        ;;flyspell          ; tasing you for misspelling mispelling
        ;;gist              ; interacting with github gists
        lookup           ; helps you navigate your code and documentation
@@ -104,6 +105,8 @@
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
        csharp            ; unity, .NET, and mono shenanigans
+       ;; lsp throws exceptions with my project
+       ;; (csharp +lsp)
        data              ; config/data formats
        ;;erlang            ; an elegant language for a more civilized age
        ;;elixir            ; erlang done right
@@ -126,7 +129,9 @@
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       org
+       (org
+        +journal
+        )
        ;;(org              ; organize your plain life in plain text
        ;; +dragndrop       ; file drag & drop support
        ;; +ipython         ; ipython support for babel
