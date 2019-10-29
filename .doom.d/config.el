@@ -1,6 +1,6 @@
 ;;; ~/.doom.d/config.el -*- lexical-binding: t; -*-
 
-;;; TRIAL SECTION
+;;; Trial section
 
 ;; (use-package eglot
 ;;   :commands (eglot eglot-ensure)
@@ -12,34 +12,16 @@
 ;;     (define-key eglot-mode-map (kbd "C-c e f") 'eglot-format)
 ;;     (define-key eglot-mode-map (kbd "C-c e h") 'eglot-help-at-point)
 ;;     (add-to-list 'eglot-server-programs
-;;                  `(csharp-mode . ((concat omnisharp-cache-directory "/server/v1.32.11/OmniSharp.exe" ) "-lsp")))))
-
-;; (setq +ivy-buffer-preview t) ;; preview buffers when using spc b b
-
-(global-set-key (kbd "<C-f2>") 'bm-toggle)
-(global-set-key (kbd "<f2>")   'bm-next)
-(global-set-key (kbd "<S-f2>") 'bm-previous)
-
-(global-set-key (kbd "<left-fringe> <mouse-5>") 'bm-next-mouse)
-(global-set-key (kbd "<left-fringe> <mouse-4>") 'bm-previous-mouse)
-(global-set-key (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
-(setq bm-marker 'bm-marker-right)
-
-;; stolen from discord
-(defun quote-word-at-point ()
-  (interactive)
-  (cl-destructuring-bind (beg . end)
-      (bounds-of-thing-at-point 'word)
-    (evil-surround-region beg end nil ?\")))
-(map! :n "g'" #'quote-word-at-point)
+;;                  `(csharp-mode . ((concat omnisharp-cache-directory "server/v1.34.3/OmniSharp.exe") "-lsp")))
+;;       ;; patch the argument. When nil, use "" instead.
+;;     (defun eglot--format-markup-patch (args)
+;;       (list (or (car args) "")))
+;;     (advice-add 'eglot--format-markup :filter-args #'eglot--format-markup-patch)))
 
 (define-key minibuffer-inactive-mode-map [mouse-1] #'ignore) ;https://www.reddit.com/r/emacs/comments/6smbgj/is_there_any_way_to_disable_opening_up_the/
-;;evil-forward-arg?
+
 (setq +word-wrap-extra-indent 'single)
 (+global-word-wrap-mode +1)
-
-;; from discord
-(setq doom-themes-treemacs-theme "doom-colors")
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
@@ -57,16 +39,6 @@
 (setq which-key-idle-delay 0.2) ;; needs to be set before entering which-key-mode
 (setq which-key-max-description-length 35)
 (remove-hook 'after-change-major-mode-hook #'doom|highlight-non-default-indentation)  ;; disable yellow highlighting for inconsistent tabs/space
-
-;; https://github.com/Alexander-Miller/treemacs/issues/411
-;; (setq treemacs-python-executable "C:\\Python37\\python.exe")
-
-;; todo make this work - marks arent rendered nicely
-;;(global-evil-fringe-mark-mode)
-(setq-default evil-fringe-mark-show-special t)
-;; (setq-default left-fringe-width 16)
-(setq-default right-fringe-width 30)
-(setq-default evil-fringe-mark-side 'right-fringe)
 
 ;; https://github.com/hlissner/doom-emacs/issues/1568
 (setq-hook! '(prog-mode-hook text-mode-hook conf-mode-hook) show-trailing-whitespace nil)
@@ -87,6 +59,7 @@
         :desc "character" :n "c" #'evil-avy-goto-char))
 
       ;; non-leader bindings
+      :n "g'" #'quote-word-at-point
       :n "<f5>" (λ! (find-file "~/.doom.d/config.el"))
       :n "<f6>" #'neotree-toggle
       :n "<f7>" #'deadgrep
@@ -144,12 +117,6 @@
    )
   )
 
-(after! helm
-  (setq
-   helm-mode-fuzzy-match t
-   helm-completion-in-region-fuzzy-match t
-   ))
-
 (after! doom-modeline
   (setq
    doom-modeline-buffer-file-name-style 'file-name
@@ -176,9 +143,7 @@
 
 (after! ivy
   (setq
-   ivy-use-ignore-default nil ;; dont ignore files that start with a dot. can toggle this with c-c c-a, or if it is off, start your search with a '.'
-   ;; counsel-rg-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s"
-   ;; ivy 0.13 says to not use '-S'
+   ivy-use-ignore-default nil
    counsel-rg-base-command "rg -M 140 --no-heading --line-number --color never %s ."
    )
   )
@@ -285,6 +250,12 @@
     )
   )
 
+(defun quote-word-at-point ()
+  (interactive)
+  (cl-destructuring-bind (beg . end)
+      (bounds-of-thing-at-point 'word)
+    (evil-surround-region beg end nil ?\")))
+
 ;;; def-packages
 (def-package! imenu-list
   :commands imenu-list-smart-toggle)
@@ -292,3 +263,35 @@
  :leader
  (:prefix "o"
    :desc "Imenu list" "i" #'imenu-list-smart-toggle))
+
+;;; Trial section 2
+(setq completion-ignore-case t)
+
+;; C-x r w <letter> to save window layout to register, C-x r j <letter> to go back.
+
+;; https://emacs.stackexchange.com/a/10446
+(defun my-hl-line-range-function ()
+  (cons (line-end-position) (line-beginning-position 2)))
+(setq hl-line-range-function #'my-hl-line-range-function)
+
+(when window-system
+  (require 'hl-line)
+  ;; (set-face-attribute 'hl-line nil :inherit nil :background "dark grey")
+  (setq global-hl-line-sticky-flag t)
+  (global-hl-line-mode 1))
+
+;; describe-face doesnt work well with hl-line-mode: use this or SPC u C-x = instead.
+(defun what-is-this-face-called ()
+  (interactive)
+  (message "This face is called: %s" (or (plist-get (text-properties-at (point)) 'face) "default")))
+
+(setq
+ company-show-numbers t
+ company-selection-wrap-around t
+ company-search-regexp-function 'company-search-flex-regexp
+ omnisharp-auto-complete-want-importable-types t
+ omnisharp-company-ignore-case nil ;; when does this work
+ omnisharp-company-match-type 'company-match-server
+ omnisharp-completing-read-function 'ivy-completing-read ;; what odes this actually do
+ omnisharp-imenu-support t ;; what odes this actually do
+ )
