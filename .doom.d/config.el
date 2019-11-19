@@ -33,8 +33,6 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-(setq auto-window-vscroll nil) ;; https://github.com/Atman50/emacs-config#speed-up-line-movement
-
 (menu-bar-mode 1)
 (setq which-key-idle-delay 0.2) ;; needs to be set before entering which-key-mode
 (setq which-key-max-description-length 35)
@@ -67,7 +65,7 @@
       :n "<f9>" #'+treemacs/toggle
 
       "C-s" #'basic-save-buffer
-      :nvmi "C-/" #'comment-line ;; this doesnt work well in visual mode
+      :nvmi "C-/" #'evilnc-comment-or-uncomment-lines ;; this doesnt work well in visual mode
       :m "M-_" #'doom/decrease-font-size ;; :m makes it override undo-tree
       "M-+" #'doom/increase-font-size
 
@@ -113,6 +111,7 @@
 ;;; Package config
 (after! org
   (setq
+   org-log-done 'time
    ;; org-startup-folded nil ;; makes all sections expanded by default
    )
   )
@@ -182,12 +181,14 @@
  treemacs-git-mode 'deferred
  sql-product 'ms
  w32-pipe-read-delay 0
+ auto-window-vscroll nil ;; https://github.com/Atman50/emacs-config#speed-up-line-movement
  )
 
 (setq-default
  frame-title-format "%b"
  )
 
+;;; Hooks
 (add-hook! web-mode
   (setq web-mode-enable-block-face nil) ;; disable black bg for code in razor files
   )
@@ -205,6 +206,8 @@
     (setq lsp-clients-csharp-language-server-path (expand-file-name "~/.omnisharp/omnisharp-win-x64/OmniSharp.exe"))
     ;; )
   )
+
+(remove-hook 'text-mode-hook 'auto-fill-mode) ; doom does this, i dont like it
 
 (add-to-list 'auto-mode-alist '("\\.cshtml$" . web-mode))
 ;; (add-to-list 'auto-mode-alist '("\\.config$" . fundamental-mode)) ;; xml mode really slow
