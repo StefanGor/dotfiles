@@ -25,17 +25,8 @@
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-(setq auto-save-interval 20)
-(setq auto-save-default t)
-(setq make-backup-files t)
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
 (menu-bar-mode 1)
-(setq which-key-idle-delay 0.2) ;; needs to be set before entering which-key-mode
-(setq which-key-max-description-length 35)
+
 (remove-hook 'after-change-major-mode-hook #'doom|highlight-non-default-indentation)  ;; disable yellow highlighting for inconsistent tabs/space
 
 ;; https://github.com/hlissner/doom-emacs/issues/1568
@@ -54,7 +45,7 @@
       :desc "toggle debug on error" :n "t d" #'toggle-debug-on-error
 
       (:desc "jump" :prefix "j"
-        :desc "character" :n "c" #'evil-avy-goto-char))
+        :desc "character" :n "c" #'evil-avy-goto-char-2))
 
       ;; non-leader bindings
       :n "g'" #'quote-word-at-point
@@ -80,23 +71,27 @@
       :n "[E" #'next-error
       :nvi "M-j" (λ! (beginning-of-defun -1)) ;; theres actually a evil/next-beginning-of-method btw
       :nvi "M-k" #'beginning-of-defun
+      :i "C-v" #'evil-paste-after
+      :n "C-M-j" #'drag-stuff-down
+      :n "C-M-k" #'drag-stuff-up
+      :i "C-z" #'undo-tree-undo
 )
 
-(map! :map csharp-mode-map
-      ;; (:localleader ;; TODO merge non-localleader with normal map??
-      ;;   :n "e" :desc "solution errors" #'omnisharp-solution-errors)
-      :i "C-." #'omnisharp-add-dot-and-auto-complete
-      :nvmi "<M-return>" #'omnisharp-run-code-action-refactoring
-      :n "gi" #'omnisharp-find-implementations
-      :n "gu" #'omnisharp-find-usages
-      ;; :n "gd" #'omnisharp-go-to-definition
-      :n "go" #'omnisharp-go-to-definition-other-window)
+(after! omnisharp
+  (map! :map omnisharp-mode-map
+        ;; (:localleader ;; TODO merge non-localleader with normal map??
+        ;;   :n "e" :desc "solution errors" #'omnisharp-solution-errors)
+        :i "C-." #'omnisharp-add-dot-and-auto-complete
+        :nvmi "<M-return>" #'omnisharp-run-code-action-refactoring
+        :n "gi" #'omnisharp-find-implementations
+        :n "gu" #'omnisharp-find-usages
+        :n "go" #'omnisharp-go-to-definition-other-window)
 
-(map! :map csharp-mode-map ;; needs to be csharp-mode-map or lambda descriptions
-      :localleader
-      :desc "refactor" :n "<return>" #'omnisharp-run-code-action-refactoring
-      :desc "errors" :n "e"  (lambda () (interactive) (omnisharp-solution-errors t))
-)
+  (map! :map csharp-mode-map ;; needs to be csharp-mode-map or lambda descriptions
+        :localleader
+        :desc "refactor" :n "<return>" #'omnisharp-run-code-action-refactoring
+        :desc "errors" :n "e"  (lambda () (interactive) (omnisharp-solution-errors t))))
+
 
 (map! :map emacs-lisp-mode-map
       :localleader
@@ -107,6 +102,10 @@
 
 (map! :map ivy-minibuffer-map
       "C-i" #'ivy-rotate-preferred-builders)
+
+(map! :map org-mode-map
+      "C-c t" #'org-timestamp-now
+      "C-c d" #'org-timestamp-now-done)
 
 ;;; Package config
 (after! org
@@ -162,15 +161,15 @@
 
 (after! company
   (setq
-   company-idle-delay 0.2
-   company-tooltip-idle-delay 0.2
+   company-idle-delay 0.1
+   company-tooltip-idle-delay 0.1
    company-search-regexp-function #'company-search-flex-regexp ;; doesnt do anything?
    ))
 
 ;;; Generic setq
 (setq
  evil-escape-key-sequence "fd"
- doom-font (font-spec :family "Hack" :size 12)
+ doom-font (font-spec :family "Hack" :size 13)
  large-file-warning-threshold nil ;; Warning about opening tags file
  electric-indent-mode t
  treemacs-silent-refresh t
@@ -182,6 +181,16 @@
  sql-product 'ms
  w32-pipe-read-delay 0
  auto-window-vscroll nil ;; https://github.com/Atman50/emacs-config#speed-up-line-movement
+ evil-split-window-below t ;; focus other window when splitting
+ evil-vsplit-window-right t
+ auto-save-interval 20
+ auto-save-default t
+ make-backup-files t
+ backup-directory-alist `((".*" . ,temporary-file-directory))
+ auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+ which-key-idle-delay 0.2
+ which-key-idle-secondary-delay 0.2
+ which-key-max-description-length 35
  )
 
 (setq-default
@@ -249,9 +258,7 @@
         (when (string-match-p "*Flycheck errors*" (buffer-name (window-buffer w)))
           (delete-window w)
           ))
-    (flycheck-list-errors)
-    )
-  )
+    (flycheck-list-errors)))
 
 (defun quote-word-at-point ()
   (interactive)
@@ -259,8 +266,16 @@
       (bounds-of-thing-at-point 'word)
     (evil-surround-region beg end nil ?\")))
 
+(defun org-timestamp-now ()
+  (interactive)
+  (org-insert-time-stamp (current-time) t t))
+
+(defun org-timestamp-now-done ()
+  (interactive)
+  (org-insert-time-stamp (current-time) t t " DONE "))
+
 ;;; def-packages
-(def-package! imenu-list
+(use-package! imenu-list
   :commands imenu-list-smart-toggle)
 (map!
  :leader
@@ -277,11 +292,11 @@
   (cons (line-end-position) (line-beginning-position 2)))
 (setq hl-line-range-function #'my-hl-line-range-function)
 
-(when window-system
-  (require 'hl-line)
-  ;; (set-face-attribute 'hl-line nil :inherit nil :background "dark grey")
-  (setq global-hl-line-sticky-flag t)
-  (global-hl-line-mode 1))
+;; (when window-system
+;;   (require 'hl-line)
+;;   (set-face-attribute 'hl-line nil :inherit nil :background "dark grey")
+;;   (setq global-hl-line-sticky-flag t)
+;;   (global-hl-line-mode 1))
 
 ;; describe-face doesnt work well with hl-line-mode: use this or SPC u C-x = instead.
 (defun what-is-this-face-called ()
@@ -295,6 +310,6 @@
  omnisharp-auto-complete-want-importable-types t
  omnisharp-company-ignore-case nil ;; when does this work
  omnisharp-company-match-type 'company-match-server
- omnisharp-completing-read-function 'ivy-completing-read ;; what odes this actually do
- omnisharp-imenu-support t ;; what odes this actually do
+ omnisharp-completing-read-function 'ivy-completing-read ;; what does this actually do
+ omnisharp-imenu-support t ;; what does this actually do
  )

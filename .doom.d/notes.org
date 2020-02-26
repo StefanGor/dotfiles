@@ -7,7 +7,6 @@ investigate completion-styles variable?
 use after!/localleader/:map for mappings
 customise pretty-code-symbols-alist
 projectile-switch-project-action ? may not be forced to select a file
-
 * ivy
 ivy-read example usage:
 (ivy-read "Your choice:"
@@ -26,28 +25,44 @@ single space as a fuzzy match e.g. 'search cshtml' for fuzzy finding a file
 also ivy-posframe seems to break with random bugs
 I removed a bunch of commented out ivy config on 18/09/19 - see commit on that day
 in case I want to go back
+
+Discord:
+How do I do multi selections (i.e. marking candidates) in ivy?
+Nevermind, figured it out: C-M-m to add current item to selection, C-M-n does the same, then automatically moves to the next line
 * which key
 explicit abort key
 :desc "Which key abort" "ESC" #'which-key-abort
 SPC h b = counsel-descbinds
 
 * omnisharp
-after finding usages, C-o will open in alternate window to <Enter>
+after finding usages, C-o will open in alternate window to <Enter> -> not true? just doesnt focus it.
+enter always opens another window for me, really annoying...
 omnisharp-solution-errors can be invoked with errors-only = true by going 'SPC u <M-x>' to use universal argument, this is due to (interactive "P")
 apparently there is a way to use extra dlls e.g. roslynator, see omnisharp github
 
 * evil
 g- is used to decrement: (evil-numbers/dec-at-pt), g= to increment
-
+gp to paste over highlighted section without overwriting clipboard
+** surround
+ysiw* to surround a word with *
+ysaw* to do around the word (will include spaces next to it)
+if you select with v/V then you can use S. Line selection seems bugged though, char goes to next line
+cs"' to change " to '
+ds" to delete surrounding "
+highlight a region, press S f => you will get prompted for a function name to surround it with
 * org
 pressing S-TAB enough times will expand all headers
 theres a way to control which level we expand headings to when we open a file by
 changing the #+title part of the file, could try this out
 ctrl-enter for a new bullet point
 gh/gj/gk/gl for navigation
-
 * window manip
 C-w m m to maximize/unmaximise a buffer
+* elisp
+macrostep collapse is bound to 'u', not 'c' as the info says
+* grepping
+:pg TextToSearchFor to avoid the freezing that can occur when using the individual character search
+SPC * to search for text under cursor
 * misc
 swiper is cool, SPC / b
 undo-propose is a possibly better alternative to undo-tree?
@@ -60,11 +75,17 @@ there was a github thread about this but i lost it
 https://lists.gnu.org/archive/html/emacs-devel/2008-02/msg00807.html
 ivy-posframe needs to be LF line ending not CRLF, probably due to the 'Local
 variables' section at the end...
-* new
+* new bindings i should use
+alt + up/down to move lines via drag-stuff package
 spc / j for ivy/jump-list
 spc / / for swiper
 spc c C / spc p C to rerun compliation
 doom/help-search is cool
 SPC h d {k,i,c} for config files
-vc-region-history
-vc-region-history
+vc-region-history is cool
+spc / {d,D} for RG under a directory (then C-c C-e for wgrep, then C-c C-c or ZZ to commit changes)
+* Non-em
+** windows
+alt + esc cycles windows, same with alt+shift+esc
+** git
+https://stackoverflow.com/questions/40462111/git-prevent-commits-in-master-branch handy

@@ -82,10 +82,10 @@ noremap <C-Left> gT
 noremap <C-Right> gt
 
 " Easier movement between windows
-noremap <C-j> <C-W>j
-noremap <C-k> <C-W>k
-noremap <C-h> <C-W>h
-noremap <C-l> <C-W>l
+"noremap <C-j> <C-W>j
+"noremap <C-k> <C-W>k
+"noremap <C-h> <C-W>h
+"noremap <C-l> <C-W>l
 
 " alt+j/k to swap lines up/down
 nnoremap <M-j> mz:m+<cr>`z
@@ -94,16 +94,20 @@ vnoremap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vnoremap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 " Tab movement using alt + function key
-nnoremap <A-F1> 1gt
-nnoremap <A-F2> 2gt
-nnoremap <A-F3> 3gt
-nnoremap <A-F4> 4gt
-nnoremap <A-F5> 5gt
-nnoremap <A-F6> 6gt
-nnoremap <A-F7> 7gt
-nnoremap <A-F8> 8gt
-nnoremap <A-F9> 9gt
-nnoremap <A-F0> 10gt
+"nnoremap <A-1> 1gt
+"nnoremap <A-2> 2gt
+"nnoremap <A-3> 3gt
+"nnoremap <A-4> 4gt
+"nnoremap <A-5> 5gt
+"nnoremap <A-6> 6gt
+"nnoremap <A-7> 7gt
+"nnoremap <A-8> 8gt
+"nnoremap <A-9> 9gt
+"nnoremap <A-0> 10gt
+
+for i in range(1, 9)
+    execute 'nnoremap <A-'.i.'> '.i.'gt<cr>'
+endfor
 
 " Use CTRL-S for saving, also in Insert mode
 noremap <C-S> :update<CR>
@@ -122,6 +126,8 @@ nnoremap <silent> <Esc><Esc> <Esc>:nohlsearch<CR><Esc>
 " Can type ':e %%\' to get the current file's path
 cabbr <expr> %% expand('%:p:h')
 
+"delete without yanking
+nnoremap <leader>d "_d 
 " }}}
 
 " CUSTOM COMMANDS {{{
@@ -244,8 +250,8 @@ map <leader>F <Plug>Sneak_S
 
 Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
-nmap ]h <Plug>GitGutterNextHunk
-nmap [h <Plug>GitGutterPrevHunk
+nmap ]h <Plug>(GitGutterNextHunk)
+nmap [h <Plug>(GitGutterPrevHunk)
 
 Plug 'yegappan/mru'
 "Plug 'bronson/vim-trailing-whitespace'
@@ -291,15 +297,32 @@ nmap <leader>t :LeaderfTag<CR>
 
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+"nnoremap <leader>g :GitFiles?<CR>
+"nnoremap <leader>p :Files<CR>
+"nnoremap <leader>t :Tags<CR>
+"nnoremap <leader><Space> :Commands<CR>
+nnoremap <leader>b :Buffers<CR>
+
+Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary!' }
+nnoremap <leader>l :Clap 
+nnoremap <leader>g :Clap git_diff_files<CR>
+nnoremap <leader>c :Clap commits<CR>
+nnoremap <leader>p :Clap files<CR>
+nnoremap <leader>j :Clap jumps<CR>
+nnoremap <leader><Space> :Clap command<CR>
+"nnoremap <leader>b :Clap buffers<CR> " get annoying errors
+nnoremap <leader>c :Clap colors<CR>
 
 Plug 'google/vim-searchindex'
 
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
+let g:session_autoload = "yes"
 
 Plug 'mattn/emmet-vim'
 
 Plug 'nickspoons/vim-cs'
+Plug 'OrangeT/vim-csharp'
 
 Plug 'joshdick/onedark.vim'
 
