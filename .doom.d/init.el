@@ -31,7 +31,7 @@
        neotree           ; a project drawer, like NERDTree for vim
        ;;ophints           ; highlight the region an operation acts on
        (popup            ; tame sudden yet inevitable temporary windows
-        +all             ; catch all popups that start with an asterix
+        ;;+all             ; catch all popups that start with an asterix. Was disabled by default a while back
         +defaults)       ; default popup rules
        ;;pretty-code       ; replace bits of code with pretty symbols
        ;;tabs              ; an tab bar for Emacs
@@ -89,6 +89,7 @@
        lookup           ; helps you navigate your code and documentation
         ;;+docsets)        ; ...or in Dash docsets locally
        lsp
+       ;; (lsp +peek)
        ;;macos             ; MacOS-specific commands
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
