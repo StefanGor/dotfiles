@@ -77,6 +77,10 @@
       :i "C-z" #'undo-tree-undo
 )
 
+(after! lsp
+  (map!
+   :n "go" #'sg-find-definition-other-window))
+
 (after! omnisharp
   (map! :map omnisharp-mode-map
         ;; (:localleader ;; TODO merge non-localleader with normal map??
@@ -268,11 +272,19 @@
 
 (defun org-timestamp-now ()
   (interactive)
-  (org-insert-time-stamp (current-time) t t))
+  (re-search-forward "$")
+  (org-insert-time-stamp (current-time) t t " "))
 
 (defun org-timestamp-now-done ()
   (interactive)
+  (re-search-forward "$")
   (org-insert-time-stamp (current-time) t t " DONE "))
+
+(defun sg-find-definition-other-window ()
+  (interactive)
+  (delete-other-windows)
+  (evil-window-vsplit)
+  (lsp-find-definition))
 
 ;;; def-packages
 (use-package! imenu-list
@@ -307,9 +319,4 @@
  company-show-numbers t
  company-selection-wrap-around t
  company-search-regexp-function 'company-search-flex-regexp
- omnisharp-auto-complete-want-importable-types t
- omnisharp-company-ignore-case nil ;; when does this work
- omnisharp-company-match-type 'company-match-server
- omnisharp-completing-read-function 'ivy-completing-read ;; what does this actually do
- omnisharp-imenu-support t ;; what does this actually do
  )
