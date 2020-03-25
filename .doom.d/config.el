@@ -137,7 +137,6 @@
 (after! projectile
   (setq
    projectile-indexing-method 'alien
-   projectile-enable-caching t
    projectile-globally-ignored-file-suffixes '(".exe" ".dll") ;; TODO this doesnt work...
    projectile-globally-ignored-files '("TAGS" "tags")
    )
