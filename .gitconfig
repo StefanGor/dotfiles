@@ -1,10 +1,11 @@
 [alias]
 	co = checkout
+	cm = !git checkout master
 	br = branch
 	ci = commit
 	st = status
 	publish = "!git branch-name push -u origin $(git branch-name)"
-	update = "!git pull origin master"
+	update = "!git checkout master && git pull && git checkout -"
 	last = log -1 HEAD
 	unstage = reset HEAD --
 	ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
@@ -18,4 +19,6 @@
 	resume = !git reset HEAD^
 	goback = !git pause && git co - 
 	cleanlocal = !git branch | grep -v master | xargs git branch -d
-	stashpull = !git stash && git pull && git stash apply
+	stashpull = !git stash && git pull && git stash pop
+[rerere]
+	enabled = true

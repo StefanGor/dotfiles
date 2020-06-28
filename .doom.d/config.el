@@ -2,26 +2,70 @@
 
 ;;; Trial section
 
-;; (use-package eglot
-;;   :commands (eglot eglot-ensure)
-;;   :hook ((python-mode . eglot-ensure)
-;;          (csharp-mode . eglot-ensure))
-;;   :config
-;;   (progn
-;;     (define-key eglot-mode-map (kbd "C-c e r") 'eglot-rename)
-;;     (define-key eglot-mode-map (kbd "C-c e f") 'eglot-format)
-;;     (define-key eglot-mode-map (kbd "C-c e h") 'eglot-help-at-point)
-;;     (add-to-list 'eglot-server-programs
-;;                  `(csharp-mode . ((concat omnisharp-cache-directory "server/v1.34.3/OmniSharp.exe") "-lsp")))
-;;       ;; patch the argument. When nil, use "" instead.
-;;     (defun eglot--format-markup-patch (args)
-;;       (list (or (car args) "")))
-;;     (advice-add 'eglot--format-markup :filter-args #'eglot--format-markup-patch)))
+;; Close compilation buffer when its done - stopped working
+;; https://emacs.stackexchange.com/a/336
+;; (setq compilation-finish-function
+;;   (lambda (buf str)
+;;     (if (null (string-match ".*exited abnormally.*" str))
+;;         ;;no errors, make the compilation window go away in a few seconds
+;;         (progn
+;;           (run-at-time
+;;            "2 sec" nil 'delete-windows-on
+;;            (get-buffer-create "*compilation*"))
+;;           (message "No Compilation Errors!")))))
+
+;; Doesnt work either - says buffer is dedicated
+(defun bury-compile-buffer-if-successful (buffer string)
+  "Bury a compilation buffer if succeeded without warnings "
+  (if (and
+       (string-match "compilation" (buffer-name buffer))
+       (string-match "finished" string)
+       (not
+        (with-current-buffer buffer
+          (search-forward "warning" nil t))))
+      (run-with-timer 1 nil
+                      (lambda (buf)
+                        (bury-buffer buf)
+                        (switch-to-prev-buffer (get-buffer-window buf) 'kill))
+                      buffer)))
+(add-hook 'compilation-finish-functions 'bury-compile-buffer-if-successful)
+
+;; https://github.com/hlissner/doom-emacs/issues/2724
+(after! evil-easymotion
+  (put 'visible-buffer 'bounds-of-thing-at-point (lambda () (cons (window-start) (window-end))))
+  (evilem-make-motion evilem-motion-forward-word-begin #'evil-forward-word-begin :scope 'visible-buffer)
+  (evilem-make-motion evilem-motion-forward-WORD-begin #'evil-forward-WORD-begin :scope 'visible-buffer)
+  (evilem-make-motion evilem-motion-forward-word-end #'evil-forward-word-end :scope 'visible-buffer)
+  (evilem-make-motion evilem-motion-forward-WORD-end #'evil-forward-WORD-end :scope 'visible-buffer)
+  (evilem-make-motion evilem-motion-backward-word-begin #'evil-backward-word-begin :scope 'visible-buffer)
+  (evilem-make-motion evilem-motion-backward-WORD-begin #'evil-backward-WORD-begin :scope 'visible-buffer)
+  (evilem-make-motion evilem-motion-backward-word-end #'evil-backward-word-end :scope 'visible-buffer)
+  (evilem-make-motion evilem-motion-backward-WORD-end #'evil-backward-WORD-end :scope 'visible-buffer))
+
+
+(add-to-list 'load-path "~/.emacs.d/extra") ;; for snails
+;(require 'snails)
+
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/") ;; custom vscode themes
+(load-theme 'vscode-dark-plus t)
+
+;; https://github.com/hlissner/doom-emacs/issues/2648#issuecomment-593474410
+(after! counsel
+  (ivy-add-actions
+   #'counsel-rg
+   '(("a" (lambda (_path) (mapc #'counsel-git-grep-action ivy--all-candidates))
+      "Open all matches"))))
+
+;; (after! lsp-ui
+  ;; (setq lsp-ui-sideline-show-hover t)) ; gets in the way in two-window split
+
+(after! flycheck
+  (set-popup-rule! "^\\*Flycheck errors\\*" :select nil)) ;dont select
 
 (define-key minibuffer-inactive-mode-map [mouse-1] #'ignore) ;https://www.reddit.com/r/emacs/comments/6smbgj/is_there_any_way_to_disable_opening_up_the/
 
 (setq +word-wrap-extra-indent 'single)
-(+global-word-wrap-mode +1)
+;; (+global-word-wrap-mode +1)
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
@@ -53,7 +97,8 @@
       :n "<f6>" #'neotree-toggle
       :n "<f7>" #'deadgrep
       :nvmi "<f8>" #'toggle-flycheck-error-buffer
-      :n "<f9>" #'+treemacs/toggle
+      ;; :n "<f9>" #'+treemacs/toggle ;; really slow on big project
+      :nvmi "<f9>" #'doom/toggle-profiler
 
       "C-s" #'basic-save-buffer
       :nvmi "C-/" #'evilnc-comment-or-uncomment-lines ;; this doesnt work well in visual mode
@@ -74,13 +119,18 @@
       :i "C-v" #'evil-paste-after
       :n "C-M-j" #'drag-stuff-down
       :n "C-M-k" #'drag-stuff-up
-      :i "C-z" #'undo-tree-undo
+      :i "C-z" #'undo-fu-only-undo
 )
 
-(after! lsp
-  (map!
-   :n "go" #'sg-find-definition-other-window))
+(map! :leader "/" doom-leader-search-map) ; reinstate SPC /
 
+;; (after! lsp
+;;   (map! (:map :leader
+;;           :n "ch" #'lsp-ui-doc-glance))
+;;   (map!
+;;    :n "go" #'sg-find-definition-other-window))
+
+;; TODO remove omnisharp section after LSP is improved
 (after! omnisharp
   (map! :map omnisharp-mode-map
         ;; (:localleader ;; TODO merge non-localleader with normal map??
@@ -96,16 +146,21 @@
         :desc "refactor" :n "<return>" #'omnisharp-run-code-action-refactoring
         :desc "errors" :n "e"  (lambda () (interactive) (omnisharp-solution-errors t))))
 
-
 (map! :map emacs-lisp-mode-map
       :localleader
       :n "v" #'eval-defun)
 
+ ;; This is on C-o C-k. This sucks now - brings up other buffers after use
+ ;; Related: if you type a space the backspace the same thing happens
 (map! :map ivy-switch-buffer-map
-      "C-c C-k" #'ivy-switch-buffer-kill) ;; This is on C-o C-k
+      "C-c C-k" #'ivy-switch-buffer-kill)
 
-(map! :map ivy-minibuffer-map
-      "C-i" #'ivy-rotate-preferred-builders)
+(defun mu-ivy-kill-buffer ()
+  (interactive)
+  (ivy-set-action 'kill-buffer)
+  (ivy-done))
+
+;; (define-key ivy-switch-buffer-map (kbd "C-i") 'mu-ivy-kill-buffer)
 
 (map! :map org-mode-map
       "C-c t" #'org-timestamp-now
@@ -114,7 +169,7 @@
 ;;; Package config
 (after! org
   (setq
-   org-log-done 'time
+   org-log-done 'time ;; show time when marking task as done
    ;; org-startup-folded nil ;; makes all sections expanded by default
    )
   )
@@ -137,7 +192,8 @@
 (after! projectile
   (setq
    projectile-indexing-method 'alien
-   projectile-globally-ignored-file-suffixes '(".exe" ".dll") ;; TODO this doesnt work...
+   projectile-enable-caching t
+   projectile-globally-ignored-file-suffixes '(".exe" ".dll")
    projectile-globally-ignored-files '("TAGS" "tags")
    )
   )
@@ -157,16 +213,10 @@
    evil-want-fine-undo t)
   )
 
-(after! evil-owl
-  (setq evil-owl-extra-posframe-args '(:width 50 :height 20)
-        evil-owl-max-string-length 50))
-(evil-owl-mode)
-
 (after! company
   (setq
    company-idle-delay 0.1
    company-tooltip-idle-delay 0.1
-   company-search-regexp-function #'company-search-flex-regexp ;; doesnt do anything?
    ))
 
 ;;; Generic setq
@@ -180,7 +230,6 @@
  mode-require-final-newline nil ;; Stop emacs adding new lines at EOF?
  require-final-newline nil
  display-line-numbers-type 'relative
- treemacs-git-mode 'deferred
  sql-product 'ms
  w32-pipe-read-delay 0
  auto-window-vscroll nil ;; https://github.com/Atman50/emacs-config#speed-up-line-movement
@@ -208,15 +257,10 @@
 (add-hook! csharp-mode
   ;; (lambda ()
     ;; suggested by https://github.com/josteink/csharp-mode
-    ;; (electric-pair-mode 1) makes new methods not work correctly...
-    ;; (electric-pair-local-mode 1)
     (c-set-offset 'arglist-intro '+) ;; First argument after open bracket (for constructors)
     (c-set-offset 'arglist-cont-nonempty '+)
-    ;; (c-offsets-alist 'arglist-close 'c-lineup-arglist)
     (c-set-offset 'substatement-open 0)
     (c-set-offset 'brace-list-open 0)
-    (setq lsp-clients-csharp-language-server-path (expand-file-name "~/.omnisharp/omnisharp-win-x64/OmniSharp.exe"))
-    ;; )
   )
 
 (remove-hook 'text-mode-hook 'auto-fill-mode) ; doom does this, i dont like it
@@ -232,26 +276,6 @@
 (transparent 100 95)
 
 (load! "restoreframe")
-
-;; https://emacs.stackexchange.com/a/336
-(setq compilation-finish-function
-  (lambda (buf str)
-    (if (null (string-match ".*exited abnormally.*" str))
-        ;;no errors, make the compilation window go away in a few seconds
-        (progn
-          (run-at-time
-           "2 sec" nil 'delete-windows-on
-           (get-buffer-create "*compilation*"))
-          (message "No Compilation Errors!")))))
-
-;; fix 'Symbol’s function definition is void: compilation--default-buffer-name' error???
-(defun compilation--default-buffer-name (name-of-mode)
-  (cond ((or (eq major-mode (intern-soft name-of-mode))
-             (eq major-mode (intern-soft (concat name-of-mode "-mode"))))
-   (buffer-name))
-  (t
-   (concat "*" (downcase name-of-mode) "*"))))
-
 
 (defun toggle-flycheck-error-buffer ()
   "toggle a flycheck error buffer."
@@ -293,29 +317,23 @@
  (:prefix "o"
    :desc "Imenu list" "i" #'imenu-list-smart-toggle))
 
-;;; Trial section 2
-(setq completion-ignore-case t)
-
-;; C-x r w <letter> to save window layout to register, C-x r j <letter> to go back.
-
-;; https://emacs.stackexchange.com/a/10446
-(defun my-hl-line-range-function ()
-  (cons (line-end-position) (line-beginning-position 2)))
-(setq hl-line-range-function #'my-hl-line-range-function)
-
-;; (when window-system
-;;   (require 'hl-line)
-;;   (set-face-attribute 'hl-line nil :inherit nil :background "dark grey")
-;;   (setq global-hl-line-sticky-flag t)
-;;   (global-hl-line-mode 1))
+(use-package! evil-owl
+  :config
+  (setq evil-owl-display-method 'posframe
+        evil-owl-extra-posframe-args '(:width 50 :height 50)
+        evil-owl-max-string-length 50)
+  (evil-owl-mode) ;; TODO reenable when fixed
+  )
 
 ;; describe-face doesnt work well with hl-line-mode: use this or SPC u C-x = instead.
 (defun what-is-this-face-called ()
   (interactive)
   (message "This face is called: %s" (or (plist-get (text-properties-at (point)) 'face) "default")))
 
-(setq
- company-show-numbers t
- company-selection-wrap-around t
- company-search-regexp-function 'company-search-flex-regexp
- )
+;;; Advices
+
+;; Center after searching https://www.reddit.com/r/emacs/comments/6ewd0h/how_can_i_center_the_search_results_vertically/
+(advice-add 'evil-ex-search-next :after
+            (lambda (&rest x) (evil-scroll-line-to-center (line-number-at-pos))))
+(advice-add 'evil-ex-search-previous :after
+            (lambda (&rest x) (evil-scroll-line-to-center (line-number-at-pos))))

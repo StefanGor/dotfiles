@@ -1,9 +1,11 @@
 " TEST SECTION
+if !exists('g:vscode') 
 let g:OmniSharp_timeout = 5
+"let g:OmniSharp_server_stdio = 1
 "let g:loaded_youcompleteme = 1 "disables YCM
 "let g:ycm_always_populate_location_list = 1
 "let g:ycm_enable_diagnostic_signs = 0 "disabling until I can fix errors
-let g:python_host_prog = 'C:\Python37\python.exe' "python not detected without this, see issue #5360
+"let g:python_host_prog = 'C:\Python37\python.exe' "python not detected without this, see issue #5360
 set nofixendofline "fix vim changing end of line issue?
 set completeopt=longest,menuone "insert the longest common completion
 
@@ -12,12 +14,12 @@ set completeopt=longest,menuone "insert the longest common completion
 
 let g:session_autosave = 'no'
 "colorscheme onedark
+set guifont=Hack:h10
 set clipboard^=unnamed,unnamedplus
 set mouse=a
 set lazyredraw
 set undofile
 set shortmess=aAIsT
-set list
 
 " tabs 4 spaces width and indent by 4 spaces with <
 set tabstop=4
@@ -189,46 +191,44 @@ autocmd VimResized * :wincmd =
 autocmd StdinReadPre * let s:std_in=1
 "autocmd VimEnter * MRU
 
-augroup omnisharp_commands
-    autocmd!
+"augroup omnisharp_commands
+    "autocmd!
 
-    " When Syntastic is available but not ALE, automatic syntax check on events
-    " (TextChanged requires Vim 7.4)
-    autocmd BufEnter,TextChanged,InsertLeave *.cs SyntasticCheck
+    "" When Syntastic is available but not ALE, automatic syntax check on events
+    "" (TextChanged requires Vim 7.4)
+    "autocmd BufEnter,TextChanged,InsertLeave *.cs SyntasticCheck
 
-    " Show type information automatically when the cursor stops moving. get some 500 errors when doing this
-    "autocmd CursorHold *.cs call OmniSharp#TypeLookupWithoutDocumentation()
+    "" Show type information automatically when the cursor stops moving. get some 500 errors when doing this
+    ""autocmd CursorHold *.cs call OmniSharp#TypeLookupWithoutDocumentation()
 
-    " The following commands are contextual, based on the cursor position.
-    autocmd FileType cs nnoremap <buffer> gd :OmniSharpGotoDefinition<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>mi :OmniSharpFindImplementations<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>ms :OmniSharpFindSymbol<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>mu :OmniSharpFindUsages<CR>
+    "" The following commands are contextual, based on the cursor position.
+    "autocmd FileType cs nnoremap <buffer> gd :OmniSharpGotoDefinition<CR>
+    "autocmd FileType cs nnoremap <buffer> <Leader>mi :OmniSharpFindImplementations<CR>
+    "autocmd FileType cs nnoremap <buffer> <Leader>ms :OmniSharpFindSymbol<CR>
+    "autocmd FileType cs nnoremap <buffer> <Leader>mu :OmniSharpFindUsages<CR>
 
-    " Finds members in the current buffer
-    autocmd FileType cs nnoremap <buffer> <Leader>mm :OmniSharpFindMembers<CR>
+    "" Finds members in the current buffer
+    "autocmd FileType cs nnoremap <buffer> <Leader>mm :OmniSharpFindMembers<CR>
 
-    autocmd FileType cs nnoremap <buffer> <Leader>mf :OmniSharpFixUsings<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>mt :OmniSharpTypeLookup<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>md :OmniSharpDocumentation<CR>
-    autocmd FileType cs nnoremap <buffer> <C-\> :OmniSharpSignatureHelp<CR>
-    autocmd FileType cs inoremap <buffer> <C-\> <C-o>:OmniSharpSignatureHelp<CR>
+    "autocmd FileType cs nnoremap <buffer> <Leader>mf :OmniSharpFixUsings<CR>
+    "autocmd FileType cs nnoremap <buffer> <Leader>mt :OmniSharpTypeLookup<CR>
+    "autocmd FileType cs nnoremap <buffer> <Leader>md :OmniSharpDocumentation<CR>
+    "autocmd FileType cs nnoremap <buffer> <C-\> :OmniSharpSignatureHelp<CR>
+    "autocmd FileType cs inoremap <buffer> <C-\> <C-o>:OmniSharpSignatureHelp<CR>
 
-    autocmd FileType cs nnoremap <buffer> <Leader>mr :OmniSharpRestartServer<CR>
+	"autocmd FileType cs nnoremap <buffer> <Leader>mr :OmniSharpRestartServer<CR>
 
-    " Navigate up and down by method/property/field
-    autocmd FileType cs nnoremap <buffer> <C-k> :OmniSharpNavigateUp<CR>
-    autocmd FileType cs nnoremap <buffer> <C-j> :OmniSharpNavigateDown<CR>
+    "" Navigate up and down by method/property/field
+    "autocmd FileType cs nnoremap <buffer> <C-k> :OmniSharpNavigateUp<CR>
+    "autocmd FileType cs nnoremap <buffer> <C-j> :OmniSharpNavigateDown<CR>
+	
+	"autocmd FileType cs nnoremap <buffer> <Leader>mk :call MakeSolution()<CR>
+"augroup END
 
-    autocmd FileType cs nnoremap <buffer> <Leader>mk :call MakeSolution()<CR>
-
-    autocmd FileType cs nnoremap <Leader>ma :OmniSharpGetCodeActions<CR>
-    autocmd FileType cs nnoremap <Leader>mf :OmniSharpCodeFormat<CR>
-    autocmd FileType cs nnoremap <Leader>mt :OmniSharpHighlightTypes<CR>
-    autocmd FileType cs nnoremap <F2> :OmniSharpRename<CR>
-
-augroup END
-
+nnoremap <Leader>ma :OmniSharpGetCodeActions<CR>
+nnoremap <Leader>mf :OmniSharpCodeFormat<CR>
+nnoremap <Leader>mt :OmniSharpHighlightTypes<CR>
+"nnoremap <F2> :OmniSharpRename<CR>
 " }}}
 
 " PLUGINS {{{
@@ -238,6 +238,7 @@ call plug#begin('~/.vim/plugged') " :echo expand('~')
 Plug 'equalsraf/neovim-gui-shim' "For GuiFont functionality without having to change environment variables
 
 Plug 'scrooloose/nerdtree'
+map <F6> :NERDTreeToggle<CR>
 
 Plug 'scrooloose/nerdcommenter'
 nmap <C-c> <leader>c<Space>
@@ -263,13 +264,13 @@ let g:ale_linters = { 'cs': ['OmniSharp'] }
 Plug 'vim-syntastic/syntastic'
 let g:syntastic_cs_checkers = ['code_checker']
 
-Plug 'OmniSharp/omnisharp-vim'
+"Plug 'OmniSharp/omnisharp-vim'
 
 Plug 'hauleth/asyncdo.vim' " for building with omnisharp
 
 Plug 'jiangmiao/auto-pairs'
 
-Plug 'Shougo/denite.nvim'
+"Plug 'Shougo/denite.nvim'
 
 Plug 'airblade/vim-rooter'
 "let g:rooter_manual_only = 1
@@ -277,7 +278,7 @@ Plug 'airblade/vim-rooter'
 Plug 'majutsushi/tagbar'
 nmap <F8> :TagbarToggle<CR>
 
-Plug 'ludovicchabant/vim-gutentags'
+"Plug 'ludovicchabant/vim-gutentags'
 let g:gutentags_cache_dir = expand('$HOME/Documents/Tags')
 let g:gutentags_ctags_exclude = ['*/node_modules/*']
 
@@ -289,11 +290,10 @@ Plug 'demelev/TagHighlight'
 Plug 'kshenoy/vim-signature'
 
 "Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
-let g:Lf_ShortcutF = '<C-P>'
-let g:Lf_WorkingDirectoryMode = 'A'
-nmap <leader>t :LeaderfTag<CR>
+"let g:Lf_ShortcutF = '<C-P>'
+"let g:Lf_WorkingDirectoryMode = 'A'
+"nmap <leader>t :LeaderfTag<CR>
 " Press C-I or tab to open up the help menu
-
 
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
@@ -331,20 +331,45 @@ Plug 'tpope/vim-unimpaired'
 Plug 'farmergreg/vim-lastplace'
 
 Plug 'ajh17/VimCompletesMe'
+
+"Plug 'kizza/ask-vscode.nvim' "doesnt work
+"nnoremap <silent> <Leader>av :AskVisualStudioCode<CR>
+
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
+let g:coc_global_extensions=[ 'coc-omnisharp' ]
+
+"inoremap <silent><expr> <TAB>
+      "\ pumvisible() ? coc#_select_confirm() :
+      "\ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      "\ <SID>check_back_space() ? "\<TAB>" :
+      "\ coc#refresh()
+
+function! s:check_back_space() abort "why did i add this?
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gh <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+"Plug 'zxqfl/tabnine-vim'
+Plug 'tpope/vim-rsi'
+
+Plug 'sheerun/vim-polyglot'
 call plug#end()
-
 colo onedark
-
-" https://github.com/BurntSushi/ripgrep/issues/425 
-"set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
-"nnoremap <Leader>g :silent lgrep<Space>
 " }}}
-
-"call denite#custom#var('file_rec', 'command',['pt', '--follow', '--nocolor', '--nogroup', '-g:', ''])
-"map <C-P> :DeniteProjectDir -buffer-name=git  file_rec<CR>
 
 "HANDY STUFF I ALWAYS FORGET
 ":copen opens the quickfix window
-
+endif
 "modeline:
 " vim: foldmethod=marker

@@ -1,8 +1,10 @@
 #+TITLE: notes
 
 * TODO
-make omnisharp company case sensitive? order of results not great
+doom update --discard
 investigate completion-styles variable?
+<RET> in the profiler view does not call profiler-report-toggle-entry which is supposed to expand the entry - it always opens up the function
+    -> its tab to expand, whoops
 ** general
 use after!/localleader/:map for mappings
 customise pretty-code-symbols-alist
@@ -33,13 +35,11 @@ Nevermind, figured it out: C-M-m to add current item to selection, C-M-n does th
 explicit abort key
 :desc "Which key abort" "ESC" #'which-key-abort
 SPC h b = counsel-descbinds
-
 * omnisharp
 after finding usages, C-o will open in alternate window to <Enter> -> not true? just doesnt focus it.
 enter always opens another window for me, really annoying...
 omnisharp-solution-errors can be invoked with errors-only = true by going 'SPC u <M-x>' to use universal argument, this is due to (interactive "P")
 apparently there is a way to use extra dlls e.g. roslynator, see omnisharp github
-
 * evil
 g- is used to decrement: (evil-numbers/dec-at-pt), g= to increment
 gp to paste over highlighted section without overwriting clipboard
@@ -56,25 +56,30 @@ theres a way to control which level we expand headings to when we open a file by
 changing the #+title part of the file, could try this out
 ctrl-enter for a new bullet point
 gh/gj/gk/gl for navigation
+** calendar
+ctrl + hjkl to move days when on calendar (C-c C-d)
 * window manip
 C-w m m to maximize/unmaximise a buffer
 * elisp
 macrostep collapse is bound to 'u', not 'c' as the info says
-* grepping
+* searching
 :pg TextToSearchFor to avoid the freezing that can occur when using the individual character search
 SPC * to search for text under cursor
-* misc
 swiper is cool, SPC / b
+ivy-rg - use -tlist --ivy to provide additional args - see counsel-rg definition
+counsel-projectile-sort-files to make complete matches show above partial matches?
+there was a github thread about this but i lost it
+** deadgrep
+i to enter insert mode. any change auto-saves file, unless file is open in a buffer, then it changes the file
+* misc
 undo-propose is a possibly better alternative to undo-tree?
 As a side note, the functionality of avy-goto-char, avy-goto-char-2 and avy-goto-line are already available on the gsf, gss, and gsj/gsk keys, respectively. https://github.com/hlissner/doom-emacs/issues/1643
 global-hl-line-mode to disable line highlighting + hl-line-mode
 can then use 'SPC h F' / M-x describe-face to get the face at point to see why its coloured the way it is
-ivy-rg - use -tlist --ivy to provide additional args - see counsel-rg definition
-counsel-projectile-sort-files to make complete matches show above partial matches?
-there was a github thread about this but i lost it
 https://lists.gnu.org/archive/html/emacs-devel/2008-02/msg00807.html
 ivy-posframe needs to be LF line ending not CRLF, probably due to the 'Local
 variables' section at the end...
+use `doom update --discard` to ignore all the dirty worktree stuff
 * new bindings i should use
 alt + up/down to move lines via drag-stuff package
 spc / j for ivy/jump-list
