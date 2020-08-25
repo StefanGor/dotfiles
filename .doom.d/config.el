@@ -42,10 +42,6 @@
   (evilem-make-motion evilem-motion-backward-word-end #'evil-backward-word-end :scope 'visible-buffer)
   (evilem-make-motion evilem-motion-backward-WORD-end #'evil-backward-WORD-end :scope 'visible-buffer))
 
-
-(add-to-list 'load-path "~/.emacs.d/extra") ;; for snails
-;(require 'snails)
-
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/") ;; custom vscode themes
 (load-theme 'vscode-dark-plus t)
 
@@ -56,8 +52,14 @@
    '(("a" (lambda (_path) (mapc #'counsel-git-grep-action ivy--all-candidates))
       "Open all matches"))))
 
-;; (after! lsp-ui
-  ;; (setq lsp-ui-sideline-show-hover t)) ; gets in the way in two-window split
+(after! lsp-ui
+  (setq lsp-ui-sideline-enable nil
+        lsp-ui-sideline-show-hover nil)
+
+  ;; https://www.reddit.com/r/emacs/comments/cejhmy/what_are_the_best_alternatives_for_lspui_or/eu40wb3/
+  (mapcar (lambda (f) (set-face-foreground f "dim gray"))
+          '(lsp-ui-sideline-code-action lsp-ui-sideline-current-symbol lsp-ui-sideline-symbol lsp-ui-sideline-symbol-info))
+  ) ; gets in the way in two-window split
 
 (after! flycheck
   (set-popup-rule! "^\\*Flycheck errors\\*" :select nil)) ;dont select
@@ -92,6 +94,7 @@
         :desc "character" :n "c" #'evil-avy-goto-char-2))
 
       ;; non-leader bindings
+      :n "gi" #'+lookup/implementations
       :n "g'" #'quote-word-at-point
       :n "<f5>" (λ! (find-file "~/.doom.d/config.el"))
       :n "<f6>" #'neotree-toggle
@@ -124,27 +127,30 @@
 
 (map! :leader "/" doom-leader-search-map) ; reinstate SPC /
 
-;; (after! lsp
-;;   (map! (:map :leader
-;;           :n "ch" #'lsp-ui-doc-glance))
-;;   (map!
-;;    :n "go" #'sg-find-definition-other-window))
+(after! lsp ;; this doesnt work
+  (map! (:leader
+          :n "ch" #'lsp-ui-doc-glance))
+  )
 
-;; TODO remove omnisharp section after LSP is improved
-(after! omnisharp
-  (map! :map omnisharp-mode-map
-        ;; (:localleader ;; TODO merge non-localleader with normal map??
-        ;;   :n "e" :desc "solution errors" #'omnisharp-solution-errors)
-        :i "C-." #'omnisharp-add-dot-and-auto-complete
-        :nvmi "<M-return>" #'omnisharp-run-code-action-refactoring
-        :n "gi" #'omnisharp-find-implementations
-        :n "gu" #'omnisharp-find-usages
-        :n "go" #'omnisharp-go-to-definition-other-window)
+(map!
+ :n "go" #'sg-find-definition-other-window
+ :n "<M-RET>" #'lsp-execute-code-action)
 
-  (map! :map csharp-mode-map ;; needs to be csharp-mode-map or lambda descriptions
-        :localleader
-        :desc "refactor" :n "<return>" #'omnisharp-run-code-action-refactoring
-        :desc "errors" :n "e"  (lambda () (interactive) (omnisharp-solution-errors t))))
+;; TODO remove omnisharp section after I fully cutover to LSP
+;; (after! omnisharp
+;;   (map! :map omnisharp-mode-map
+;;         ;; (:localleader ;; TODO merge non-localleader with normal map??
+;;         ;;   :n "e" :desc "solution errors" #'omnisharp-solution-errors)
+;;         :i "C-." #'omnisharp-add-dot-and-auto-complete
+;;         :nvmi "<M-return>" #'omnisharp-run-code-action-refactoring
+;;         :n "gi" #'omnisharp-find-implementations
+;;         :n "gu" #'omnisharp-find-usages
+;;         :n "go" #'omnisharp-go-to-definition-other-window)
+
+;;   (map! :map csharp-mode-map ;; needs to be csharp-mode-map or lambda descriptions
+;;         :localleader
+;;         :desc "refactor" :n "<return>" #'omnisharp-run-code-action-refactoring
+;;         :desc "errors" :n "e"  (lambda () (interactive) (omnisharp-solution-errors t))))
 
 (map! :map emacs-lisp-mode-map
       :localleader
@@ -266,6 +272,7 @@
 (remove-hook 'text-mode-hook 'auto-fill-mode) ; doom does this, i dont like it
 
 (add-to-list 'auto-mode-alist '("\\.cshtml$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.json.config$" . json-mode))
 ;; (add-to-list 'auto-mode-alist '("\\.config$" . fundamental-mode)) ;; xml mode really slow
 
 ;;; Functions

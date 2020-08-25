@@ -22,13 +22,11 @@ pass params to rg: '--no-ignore -t cs -- <search terms>'
 
 ctrl s to view history
 
-honestly fuzzy isnt that great - disable fuzzy and just use a
-single space as a fuzzy match e.g. 'search cshtml' for fuzzy finding a file
+honestly fuzzy isnt that great - disable fuzzy and just use a single space as a fuzzy match e.g. 'search cshtml' for fuzzy finding a file
 also ivy-posframe seems to break with random bugs
-I removed a bunch of commented out ivy config on 18/09/19 - see commit on that day
-in case I want to go back
+I removed a bunch of commented out ivy config on 18/09/19 - see commit on that dayFin case I want to go back
 
-Discord:
+From discord:
 How do I do multi selections (i.e. marking candidates) in ivy?
 Nevermind, figured it out: C-M-m to add current item to selection, C-M-n does the same, then automatically moves to the next line
 * which key
@@ -72,7 +70,6 @@ there was a github thread about this but i lost it
 ** deadgrep
 i to enter insert mode. any change auto-saves file, unless file is open in a buffer, then it changes the file
 * misc
-undo-propose is a possibly better alternative to undo-tree?
 As a side note, the functionality of avy-goto-char, avy-goto-char-2 and avy-goto-line are already available on the gsf, gss, and gsj/gsk keys, respectively. https://github.com/hlissner/doom-emacs/issues/1643
 global-hl-line-mode to disable line highlighting + hl-line-mode
 can then use 'SPC h F' / M-x describe-face to get the face at point to see why its coloured the way it is
