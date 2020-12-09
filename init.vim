@@ -1,5 +1,4 @@
 " TEST SECTION
-if !exists('g:vscode') 
 let g:OmniSharp_timeout = 5
 "let g:OmniSharp_server_stdio = 1
 "let g:loaded_youcompleteme = 1 "disables YCM
@@ -264,7 +263,9 @@ let g:ale_linters = { 'cs': ['OmniSharp'] }
 Plug 'vim-syntastic/syntastic'
 let g:syntastic_cs_checkers = ['code_checker']
 
-"Plug 'OmniSharp/omnisharp-vim'
+Plug 'OmniSharp/omnisharp-vim'
+Plug 'nickspoons/vim-sharpenup'
+let g:sharpenup_map_prefix = ','
 
 Plug 'hauleth/asyncdo.vim' " for building with omnisharp
 
@@ -306,7 +307,7 @@ nnoremap <leader>b :Buffers<CR>
 Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary!' }
 nnoremap <leader>l :Clap 
 nnoremap <leader>g :Clap git_diff_files<CR>
-nnoremap <leader>c :Clap commits<CR>
+"nnoremap <leader>c :Clap commits<CR>
 nnoremap <leader>p :Clap files<CR>
 nnoremap <leader>j :Clap jumps<CR>
 nnoremap <leader><Space> :Clap command<CR>
@@ -370,6 +371,5 @@ colo onedark
 
 "HANDY STUFF I ALWAYS FORGET
 ":copen opens the quickfix window
-endif
 "modeline:
 " vim: foldmethod=marker

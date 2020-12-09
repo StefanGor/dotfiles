@@ -14,6 +14,8 @@
 (package! forge :disable t)
 (package! undo-propose)
 (package! imenu-list)
+;; (package! ejira)
+(package! org-jira)
 
 ;; https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#installing-a-third-party-theme doesnt work
 ;; (package! vscode-dark-theme :recipe (:host github :repo "ianpan870102/vscode-dark-emacs-theme"))

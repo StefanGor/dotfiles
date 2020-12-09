@@ -30,6 +30,9 @@
                       buffer)))
 (add-hook 'compilation-finish-functions 'bury-compile-buffer-if-successful)
 
+;; (require sharper)
+(global-set-key (kbd "C-c n") 'sharper-main-transient) ;; For "n" for "dot NET"
+
 ;; https://github.com/hlissner/doom-emacs/issues/2724
 (after! evil-easymotion
   (put 'visible-buffer 'bounds-of-thing-at-point (lambda () (cons (window-start) (window-end))))
@@ -105,7 +108,7 @@
 
       "C-s" #'basic-save-buffer
       :nvmi "C-/" #'evilnc-comment-or-uncomment-lines ;; this doesnt work well in visual mode
-      :m "M-_" #'doom/decrease-font-size ;; :m makes it override undo-tree
+      "M-_" #'doom/decrease-font-size ;; :m makes it override undo-tree
       "M-+" #'doom/increase-font-size
 
       :n "<C-tab>" #'evil-switch-to-windows-last-buffer
@@ -185,6 +188,10 @@
    doom-modeline-buffer-file-name-style 'file-name
    doom-modeline-buffer-encoding nil
    )
+   (doom-modeline-def-modeline 'minimal
+   '(bar matches buffer-info)
+   '(misc-info major-mode process vcs checker))
+
    (doom-modeline-def-modeline 'main
    '(bar matches buffer-info)
    '(misc-info major-mode process vcs checker))
@@ -228,7 +235,7 @@
 ;;; Generic setq
 (setq
  evil-escape-key-sequence "fd"
- doom-font (font-spec :family "Hack" :size 13)
+ doom-font (font-spec :family "Hack" :size 20)
  large-file-warning-threshold nil ;; Warning about opening tags file
  electric-indent-mode t
  treemacs-silent-refresh t
